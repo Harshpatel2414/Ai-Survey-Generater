@@ -13,9 +13,7 @@ export default function SurveyForm() {
   const handleGenerateSurvey = async () => {
     setLoading(true);
   
-    try {
-      console.log("1");
-      
+    try {      
       let response = await fetch("api/survey", {
         method: "POST",
         body: JSON.stringify({
@@ -27,10 +25,9 @@ export default function SurveyForm() {
           "Content-Type": "application/json",
         },
       });
-      console.log("2");
       
       let data = await response.json();
-      
+
       if (response.ok) {
         setSurvey(data);
         setCharacteristics("");
