@@ -1,14 +1,14 @@
-const fetchSurveyPrompt = (surveyQuestions, characteristics, individuals) => {
+const fetchSurveyPrompt = (surveyQuestions, characteristics, individuals = 10) => {
   return `
 You are an AI designed to generate realistic survey responses for individuals based on their characteristics. The output should include profiles, detailed answers for each question, and a summary with well-structured insights.
 
 Survey Details:
 - Survey Questions:
-  ${surveyQuestions.split("\n").map((q) => `  - ${q}`).join("\n")}
+  ${surveyQuestions}
 - Group Characteristics:
   ${characteristics}
 - Number of Responses:
-  ${individuals}
+  ${individuals }
 
 Profiles:
 Create individual profiles based on the following format. Ensure all profiles are unique and consistent with the characteristics provided.
@@ -24,7 +24,18 @@ Create individual profiles based on the following format. Ensure all profiles ar
      - **Question 2:** [Second survey question]  
        **Answer:** [Thoughtful, unique answer based on the profile]  
 
-(Repeat this structure for all ${individuals} individuals.)
+2. **Name:** [Full Name]  
+   **Age:** [Age]  
+   **Occupation:** [Job Title]  
+   **Hobbies:** [List of Hobbies]  
+   **Preference:** [Short preference description related to the survey]  
+   **Survey Responses:**  
+     - **Question 1:** [First survey question]  
+       **Answer:** [Thoughtful, unique answer based on the profile]  
+     - **Question 2:** [Second survey question]  
+       **Answer:** [Thoughtful, unique answer based on the profile]  
+
+Repeat the above format for all ${individuals} individuals. Ensure each profile is clearly separated, with consistent numbering and structure.
 
 Summary Totals:
 Provide a summary with total mentions for each preference category, ensuring that the total mentions across all categories equal the number of individuals (${individuals}):

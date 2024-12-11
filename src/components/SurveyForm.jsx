@@ -42,7 +42,7 @@ export default function SurveyForm() {
   };
 
   return (
-    <div className=" mx-auto p-5">
+    <div className="mx-auto p-5">
       <h1 className="text-2xl font-bold mb-5 text-center">AI Survey Form</h1>
       <form className="space-y-4">
         {/* Survey Questions */}
@@ -94,7 +94,7 @@ export default function SurveyForm() {
         {/* Submit Button */}
         <Button
           onClick={handleGenerateSurvey}
-          disabled={!surveyQuestions || !characteristics || !individuals}
+          disabled={!surveyQuestions || !characteristics }
           text="Generate Survey"
           className="w-full bg-[#4e8d99] hover:bg-[#589eac]"
         />

@@ -7,6 +7,10 @@ const TypingEffect = ({ content }) => {
   const [displayedContent, setDisplayedContent] = useState('');
   
   useEffect(() => {
+    if (content === "") {
+      setDisplayedContent(""); 
+      return;
+    }
     let currentIndex = 0;
     const interval = setInterval(() => {
       if (currentIndex < content.length) {
