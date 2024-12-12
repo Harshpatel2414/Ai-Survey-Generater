@@ -94,7 +94,7 @@ export default function SurveyForm() {
         {/* Submit Button */}
         <Button
           onClick={handleGenerateSurvey}
-          disabled={!surveyQuestions || !characteristics }
+          disabled={!surveyQuestions }
           text="Generate Survey"
           className="w-full bg-[#4e8d99] hover:bg-[#589eac]"
         />

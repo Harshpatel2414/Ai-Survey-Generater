@@ -1,4 +1,4 @@
-const fetchSurveyPrompt = (surveyQuestions, characteristics, individuals = 10) => {
+const fetchSurveyPrompt = (surveyQuestions, characteristics, individuals) => {
   return `
         You are tasked with generating survey responses. 
 
@@ -9,55 +9,47 @@ const fetchSurveyPrompt = (surveyQuestions, characteristics, individuals = 10) =
         ${characteristics || "No specific characteristics provided. Assume a general audience."}
 
         Requirements:
-        1. Generate ${individuals} profiles. Each profile must include An index number for each individual. (e.g., Profile #):
+        1. Generate ${individuals || 10} profiles. Each profile must include An index number for each individual. (e.g., Profile #):
+
          1) - Name
             - Age
             - Gender
             - Country
-            - Relevant attributes based on the question
-         upto number of ${individuals}.
+            - Dynamic Relevant attributes based on the question
+
+         upto number of ${individuals || 10}.
           
-        2. Create a summary of these profiles in tabular format:
-          - Use the format below for the summary table:
+        2. Ensure that the total number of mentions matches the number of individuals (${individuals || 10}). 
+              Each individual's feedback can include multiple aspects across categories.
 
-          Reason Category      Total Mentions
-          Positive Preferences
-          - [Subcategory]         [Mentions Count]
-          - [Subcategory]         [Mentions Count]
-          ...
-          Neutral Preferences
-          - [Subcategory]         [Mentions Count]
-          ...
-          Negative Preferences
-          - [Subcategory]         [Mentions Count]
-          ...
+        3. Create a **Summary Table** where the total mentions match the exact number of profiles (${individuals || 10}). 
+           - Each respondent must contribute only **one mention** to the table to ensure accurate totals. Use the following table format:
 
-        3. Total Mentions by Type:
-        - Positive Preferences:   [Total Count]
-        - Neutral Preferences:    [Total Count]
-        - Negative Preferences:   [Total Count]
+          Reason Category          Total Mentions
+           - [Subcategory]         [Mentions Count]
+           - [Subcategory]         [Mentions Count]
+           ...
+             
+        4. Total Mentions by Type:
 
-        4. Ensure that the total number of mentions matches the number of individuals (${individuals}). 
-           Each individual's feedback can include multiple aspects across categories.
+           - [mention category preferance ] :   [Total Count]
+           ...
+
         
         5. Key Categories of Preferences:
-           Positive Preferences
+
+           -[mentions categories] Preferences
               - [Subcategory]: [Explanation]
-              - [Subcategory]: [Explanation]
-              ...
-           Neutral Preferences
-              - [Subcategory]: [Explanation]
-              ...
-           Negative Preferences
               - [Subcategory]: [Explanation]
               ...
         
         6. Summary of Trends:
-        - Analyze the survey responses and identify key trends pointing out the most common preferences and dislikes.
+
+          -Analyze the survey responses and identify key points of interest.
+           - give ponits of interest
 
         Be concise, relevant, and insightful.
 `;
 };
 
 export default fetchSurveyPrompt;
-
