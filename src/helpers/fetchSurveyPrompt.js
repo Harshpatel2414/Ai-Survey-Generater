@@ -1,87 +1,63 @@
 const fetchSurveyPrompt = (surveyQuestions, characteristics, individuals = 10) => {
   return `
-You are an AI designed to generate realistic survey responses for individuals based on their characteristics. The output should include profiles, detailed answers for each question, and a summary with well-structured insights.
+        You are tasked with generating survey responses. 
 
-Survey Details:
-- Survey Questions:
-  ${surveyQuestions}
-- Group Characteristics:
-  ${characteristics}
-- Number of Responses:
-  ${individuals }
+        Questions:
+        ${surveyQuestions}
 
-Profiles:
-Create individual profiles based on the following format. Ensure all profiles are unique and consistent with the characteristics provided.
+        Characteristics:
+        ${characteristics || "No specific characteristics provided. Assume a general audience."}
 
-1. **Name:** [Full Name]  
-   **Age:** [Age]  
-   **Occupation:** [Job Title]  
-   **Hobbies:** [List of Hobbies]  
-   **Preference:** [Short preference description related to the survey]  
-   **Survey Responses:**  
-     - **Question 1:** [First survey question]  
-       **Answer:** [Thoughtful, unique answer based on the profile]  
-     - **Question 2:** [Second survey question]  
-       **Answer:** [Thoughtful, unique answer based on the profile]  
+        Requirements:
+        1. Generate ${individuals} profiles. Each profile must include An index number for each individual. (e.g., Profile #):
+         1) - Name
+            - Age
+            - Gender
+            - Country
+            - Relevant attributes based on the question
+         upto number of ${individuals}.
+          
+        2. Create a summary of these profiles in tabular format:
+          - Use the format below for the summary table:
 
-2. **Name:** [Full Name]  
-   **Age:** [Age]  
-   **Occupation:** [Job Title]  
-   **Hobbies:** [List of Hobbies]  
-   **Preference:** [Short preference description related to the survey]  
-   **Survey Responses:**  
-     - **Question 1:** [First survey question]  
-       **Answer:** [Thoughtful, unique answer based on the profile]  
-     - **Question 2:** [Second survey question]  
-       **Answer:** [Thoughtful, unique answer based on the profile]  
+          Reason Category      Total Mentions
+          Positive Preferences
+          - [Subcategory]         [Mentions Count]
+          - [Subcategory]         [Mentions Count]
+          ...
+          Neutral Preferences
+          - [Subcategory]         [Mentions Count]
+          ...
+          Negative Preferences
+          - [Subcategory]         [Mentions Count]
+          ...
 
-Repeat the above format for all ${individuals} individuals. Ensure each profile is clearly separated, with consistent numbering and structure.
+        3. Total Mentions by Type:
+        - Positive Preferences:   [Total Count]
+        - Neutral Preferences:    [Total Count]
+        - Negative Preferences:   [Total Count]
 
-Summary Totals:
-Provide a summary with total mentions for each preference category, ensuring that the total mentions across all categories equal the number of individuals (${individuals}):
+        4. Ensure that the total number of mentions matches the number of individuals (${individuals}). 
+           Each individual's feedback can include multiple aspects across categories.
+        
+        5. Key Categories of Preferences:
+           Positive Preferences
+              - [Subcategory]: [Explanation]
+              - [Subcategory]: [Explanation]
+              ...
+           Neutral Preferences
+              - [Subcategory]: [Explanation]
+              ...
+           Negative Preferences
+              - [Subcategory]: [Explanation]
+              ...
+        
+        6. Summary of Trends:
+        - Analyze the survey responses and identify key trends pointing out the most common preferences and dislikes.
 
-# Preference Categories:
-- **Positive Preferences**  
-  - Effectiveness: [Number]  
-  - Strong Mint Flavor: [Number]  
-  - Readily Available: [Number]  
-
-- **Neutral Preferences**  
-  - Inexpensive: [Number]  
-  - Common Use: [Number]  
-  - Okay/It's alright: [Number]  
-
-- **Negative Preferences**  
-  - Strong/Harsh taste: [Number]  
-  - Not preferable to use: [Number]  
-
-# Total Mentions by Type:
-- Positive Preferences: [Total for Positive]  
-- Neutral Preferences: [Total for Neutral]  
-- Negative Preferences: [Total for Negative]  
-
-Ensure that the total mentions across these categories match the number of individuals, which is ${individuals}.
-
-# Categories of Preferences:
-Organize preferences with detailed subpoints indicating how many individuals chose each, and provide information on why each preference was mentioned:
-
-**Positive Preferences:**  
-  - Effectiveness: [Explanation of why individuals prefer this]  
-  - Strong Mint Flavor: [Explanation of why individuals prefer this]  
-  - Readily Available/Familiar: [Explanation of why individuals prefer this]  
-
-**Neutral Preferences:**  
-  - Inexpensive: [Explanation of why individuals mentioned this preference]  
-  - Common Use: [Explanation of why individuals mentioned this preference]  
-  - Okay/It's alright: [Explanation of why individuals mentioned this preference]  
-
-**Negative Preferences:**  
-  - Strong/Harsh taste: [Explanation of why individuals dislike this]  
-  - Not preferable to use: [Explanation of why individuals dislike this]  
-
-**Summary of Trends:**  
-Write a brief analysis highlighting key trends from the survey.  
-  `;
+        Be concise, relevant, and insightful.
+`;
 };
 
 export default fetchSurveyPrompt;
+

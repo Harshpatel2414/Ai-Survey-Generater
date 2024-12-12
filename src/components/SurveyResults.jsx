@@ -36,7 +36,7 @@ const SurveyResultsv = () => {
             </div>
           </div>
         ) : (
-          <div className="min-h-96 max-h-96 text-gray-500 p-4 overflow-y-scroll ">
+          <div className="h-full text-gray-500 p-4 overflow-hidden overflow-y-scroll hide-scrollbar">
             <TypingEffect content={survey} />
           </div>
         )}
