@@ -14,7 +14,7 @@ const TypingEffect = ({ content }) => {
     let currentIndex = 0;
     const interval = setInterval(() => {
       if (currentIndex < content.length) {
-        setDisplayedContent(content.substring(0, currentIndex + 1));
+         setDisplayedContent(content.substring(0, currentIndex + 1));
         currentIndex += 1;
       } else {
         clearInterval(interval); 

@@ -20,7 +20,6 @@ const fetchSurveyPrompt = (surveyQuestions, characteristics, individuals) => {
             Ensure that each profile is well-rounded, with a mix of responses related to the main topic. 
             Generate up to ${individuals || 10} profiles in same formate below the one.
 
-
         **Mentions and Totals:**
            - The total number of mentions in the **Summary Table** must **exactly match the number of profiles (${individuals || 10})**.
 
