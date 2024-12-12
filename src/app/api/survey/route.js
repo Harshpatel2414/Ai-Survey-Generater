@@ -1,4 +1,4 @@
-export const maxDuration = 30;
+export const maxDuration = 60;
 import { NextResponse } from 'next/server';
 import getModelResponse from '@/utils/getModelResponse';
 import fetchSurveyPrompt from '@/helpers/fetchSurveyPrompt';

@@ -16,7 +16,7 @@ const SurveyResultsv = () => {
       <div className="border-b-2 border-gray-200 ">
         <h2 className="text-lg font-bold text-gray-700 mb-4">Survey Results</h2>
       </div>
-      <div className="h-96">
+      <div className="h-96 p-4">
         {loading ? (
           <div className="flex items-center justify-start py-1 h-10 gap-1 pl-2">
             <div className="dot bounce-animation text-3xl text-[#6d445e] font-bold">
@@ -36,7 +36,7 @@ const SurveyResultsv = () => {
             </div>
           </div>
         ) : (
-          <div className="h-full text-gray-500 p-4 overflow-hidden overflow-y-scroll hide-scrollbar">
+          <div className="h-full text-gray-500 overflow-hidden overflow-y-scroll hide-scrollbar">
             <TypingEffect content={survey} />
           </div>
         )}

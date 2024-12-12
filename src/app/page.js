@@ -12,11 +12,11 @@ export default function HomePage() {
             Generate AI <br /> Survey and get the results
           </h1>
         </div>
-        <div className='px-4 lg:px-20'>
+        <div className='px-4 lg:px-20 pb-10'>
           <SurveyForm />
         </div>
       </div>
-      <div className='flex-1 '>
+      <div className='flex-1'>
         <SurveyResults />
       </div>
     </main>

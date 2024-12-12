@@ -15,11 +15,11 @@ const TypingEffect = ({ content }) => {
     const interval = setInterval(() => {
       if (currentIndex < content.length) {
         setDisplayedContent(content.substring(0, currentIndex + 1));
-        currentIndex += 50;
+        currentIndex += 1;
       } else {
         clearInterval(interval); 
       }
-    }, 50); 
+    }, 1); 
 
     return () => clearInterval(interval); 
   }, [content]);
