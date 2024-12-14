@@ -1,11 +1,12 @@
 "use client";
-import { memo, useEffect, useRef, useState } from "react";
+import { memo } from "react";
 import Button from "./common/Button";
-import TypingEffect from "./TypingEffect";
+import ReactMarkdown from "react-markdown";
+import remarkGfm from "remark-gfm";
 import { useAppContext } from "@/contexts/AppContext";
 
 const SurveyResultsv = () => {
-  const { loading, survey, setSurvey } = useAppContext();
+  const { survey, setSurvey } = useAppContext();
 
   const handleReset = () => {
     setSurvey("");
@@ -16,30 +17,10 @@ const SurveyResultsv = () => {
       <div className="border-b-2 border-gray-200 ">
         <h2 className="text-lg font-bold text-gray-700 mb-4">Survey Results</h2>
       </div>
-      <div className="h-96 p-4">
-        {loading ? (
-          <div className="flex items-center justify-start py-1 h-10 gap-1 pl-2">
-            <div className="dot bounce-animation text-3xl text-[#6d445e] font-bold">
-              .
-            </div>
-            <div
-              className="dot bounce-animation text-3xl text-[#6d445e] font-bold"
-              style={{ animationDelay: "0.2s" }}
-            >
-              .
-            </div>
-            <div
-              className="dot bounce-animation text-3xl text-[#6d445e] font-bold"
-              style={{ animationDelay: "0.4s" }}
-            >
-              .
-            </div>
-          </div>
-        ) : (
-          <div className="h-full text-gray-500 overflow-hidden overflow-y-scroll hide-scrollbar markdown-container">
-            <TypingEffect content={survey} />
-          </div>
-        )}
+      <div className="h-[65dvh] p-4">
+        <div className="h-full text-gray-500 overflow-hidden overflow-y-scroll hide-scrollbar markdown-container">
+          <ReactMarkdown remarkPlugins={[remarkGfm]}>{survey}</ReactMarkdown>
+        </div>
       </div>
       <Button
         onClick={handleReset}

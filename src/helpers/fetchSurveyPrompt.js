@@ -22,7 +22,8 @@ const fetchSurveyPrompt = (surveyQuestions, characteristics, individuals) => {
 
         **Summary Totals:**  
         Generate a table summarizing the responses in Markdown format:
-
+        Ensure the **total mentions equal the number of profiles** (${individuals || 10}).
+        
           | Reason Category       | Total Mentions |
           |-----------------------|----------------|
           | **[Category]**        |                |
@@ -32,7 +33,6 @@ const fetchSurveyPrompt = (surveyQuestions, characteristics, individuals) => {
           | - [Subcategory]       | [Count]        |
           | - [Subcategory]       | [Count]        |
 
-        Ensure the **total mentions equal the number of profiles** (${individuals || 10}).
 
         **Mentions by Type:**  
         Provide a detailed breakdown of preferences in Markdown, such as:  

@@ -5,8 +5,8 @@ import remarkGfm from 'remark-gfm';
 
 const TypingEffect = ({ content }) => {
   const [displayedContent, setDisplayedContent] = useState('');
-  const speed = 20; // Total duration in milliseconds per update
-  const stepSize = 15; // Number of characters to add per step
+  const speed = 20; 
+  const stepSize = 50;
 
   useEffect(() => {
     if (!content) {

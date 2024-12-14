@@ -2,43 +2,21 @@
 import { useState } from "react";
 import Button from "./common/Button";
 import { useAppContext } from "@/contexts/AppContext";
+import fetchSurveyPrompt from "@/helpers/fetchSurveyPrompt";
 
 export default function SurveyForm() {
   const [surveyQuestions, setSurveyQuestions] = useState("");
   const [characteristics, setCharacteristics] = useState("");
   const [individuals, setIndividuals] = useState("");
-  const { setSurvey, setLoading } = useAppContext();
+  const { loading, fetchSurveyResponse } = useAppContext();
 
   // Handle form submission
   const handleGenerateSurvey = async () => {
-    setLoading(true);
-  
-    try {      
-      let response = await fetch("api/survey", {
-        method: "POST",
-        body: JSON.stringify({
-          surveyQuestions,
-          characteristics,
-          individuals,
-        }),
-        headers: {
-          "Content-Type": "application/json",
-        },
-      });
-      
-      let data = await response.json();
-
-      if (response.ok) {
-        setSurvey(data);
-        setCharacteristics("");
-        setSurveyQuestions("");
-        setIndividuals("");
-      }
-    } catch (error) {
-      console.log(error);
-    } finally {
-      setLoading(false);
-    }
+    
+    await fetchSurveyResponse(fetchSurveyPrompt(surveyQuestions, characteristics, individuals));
+    setSurveyQuestions("");
+    setCharacteristics("");
+    setIndividuals("");
   };
 
   return (
@@ -94,7 +72,7 @@ export default function SurveyForm() {
         {/* Submit Button */}
         <Button
           onClick={handleGenerateSurvey}
-          disabled={!surveyQuestions }
+          disabled={!surveyQuestions && loading }
           text="Generate Survey"
           className="w-full bg-[#4e8d99] hover:bg-[#589eac]"
         />
