@@ -8,6 +8,10 @@ const fetchSurveyPrompt = (surveyQuestions, characteristics, individuals) => {
         **Respondent Characteristics:**
         ${characteristics || "No specific characteristics provided. Assume a general audience."}
 
+        Ensure the entire response follows the order:
+          1. Summary Section first.
+          2. Profiles Section second.
+
         **Requirements:**
         - Generate **${individuals || 10} profiles** in **Markdown format**.
         - Each profile must include an index number (e.g., Profile 1, Profile 2, etc.).
@@ -21,8 +25,9 @@ const fetchSurveyPrompt = (surveyQuestions, characteristics, individuals) => {
           - [Include attributes relevant to the survey questions]
 
         **Summary Totals:**  
-        Generate a table summarizing the responses in Markdown format:
-        Ensure the **total mentions equal the number of profiles** (${individuals || 10}).
+        - Analyze the survey responses and generate a **breakdown of responses** dynamically in the following table format.
+        - The **categories** and **subcategories** must be inferred based on the survey question and responses.
+        - Ensure the **total mentions match the number of profiles** (${individuals || 10}).
         
           | Reason Category       | Total Mentions |
           |-----------------------|----------------|
@@ -33,6 +38,17 @@ const fetchSurveyPrompt = (surveyQuestions, characteristics, individuals) => {
           | - [Subcategory]       | [Count]        |
           | - [Subcategory]       | [Count]        |
 
+        #### Example (if the question is about famous players):  
+          | Reason Category       | Total Mentions |  
+          |-----------------------|----------------|  
+          | **Player A**          |                |  
+          | - Skill 1             | 4              |  
+          | - Skill 2             | 2              |  
+          | **Player B**          |                |  
+          | - Skill 1             | 3              |  
+          | - Skill 2             | 1              |  
+
+          --- 
 
         **Mentions by Type:**  
         Provide a detailed breakdown of preferences in Markdown, such as:  

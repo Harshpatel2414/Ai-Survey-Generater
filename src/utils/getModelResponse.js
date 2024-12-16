@@ -12,7 +12,7 @@ const getModelResponse = async (prompt,onChunk) => {
             messages: [
                 { role: "system", content: prompt }
             ],
-            stream: true, // Enable streaming
+            stream: true,
         });
     
         for await (const chunk of stream) {
