@@ -8,21 +8,20 @@ const fetchSurveyPrompt = (surveyQuestions, characteristics, individuals) => {
         **Respondent Characteristics:**
         ${characteristics || "No specific characteristics provided. Assume a general audience."}
 
-        Ensure the entire response follows the order:
-          1. Summary Section first.
-          2. Profiles Section second.
-
         **Requirements:**
+        -  Before providing the detailed profiles, generate a short brief **summary** of the overall survey based on the following:  
+              - Analyze **key insights** from the generated responses.  
+              - Summarize the **top preferences, trends, and notable observations** in a concise paragraph.
+
         - Generate **${individuals || 10} profiles** in **Markdown format**.
         - Each profile must include an index number (e.g., Profile 1, Profile 2, etc.).
         - **Format** each profile as follows:
-
           **Profile [Number]:**  
-          - **Name**:  
-          - **Age**:  
-          - **Gender**:  
-          - **Country**:  
-          - [Include attributes relevant to the survey questions]
+            - **Name**:  
+            - **Age**:  
+            - **Gender**:  
+            - **Country**:  
+            - [Include attributes relevant to the survey questions]
 
         **Summary Totals:**  
         - Analyze the survey responses and generate a **breakdown of responses** dynamically in the following table format.
