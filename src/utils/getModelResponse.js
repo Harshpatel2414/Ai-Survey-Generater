@@ -12,6 +12,7 @@ const getModelResponse = async (prompt,onChunk) => {
             messages: [
                 { role: "system", content: prompt }
             ],
+            temperature: 0.1,
             stream: true,
         });
     

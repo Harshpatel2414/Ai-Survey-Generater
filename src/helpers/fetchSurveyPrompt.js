@@ -27,7 +27,8 @@ const fetchSurveyPrompt = (surveyQuestions, characteristics, individuals) => {
         **Summary Totals:**  
         - Analyze the survey responses and generate a **breakdown of responses** dynamically in the following table format.
         - The **categories** and **subcategories** must be inferred based on the survey question and responses.
-        - Ensure the **total mentions match the number of profiles** (${individuals || 10}).
+        - Ensure the **total mentions match the number of profiles** (${individuals || 10}).  For example, if 5 people are surveyed, the breakdown should reflect a total of 5 mentions across the options, with categories based on the question.
+        Note : Do not give more mentions than the number of profiles. only one mention per profile and the total mentions should be equal to the number of profiles.
         
           | Reason Category       | Total Mentions |
           |-----------------------|----------------|
