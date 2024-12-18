@@ -22,7 +22,6 @@ export default function Header() {
       >
         <button>Pricing</button>
         <button className="text-[#6d445e]">AI Survey Examples</button>
-        <Link href={'/login'} className="underline text-[#4e8d99]">Login</Link>
       </div>
 
       <div className="flex items-center flex-row-reverse gap-2">
