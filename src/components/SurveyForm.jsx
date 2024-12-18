@@ -1,8 +1,9 @@
 "use client";
 import { useState } from "react";
 import Button from "./common/Button";
-import { useAppContext } from "@/contexts/AppContext";
+import { useAppContext } from "@/context/AppContext";
 import fetchSurveyPrompt from "@/helpers/fetchSurveyPrompt";
+import toast from "react-hot-toast";
 
 export default function SurveyForm() {
   const [surveyQuestions, setSurveyQuestions] = useState("");
@@ -12,11 +13,16 @@ export default function SurveyForm() {
 
   // Handle form submission
   const handleGenerateSurvey = async () => {
-    
-    await fetchSurveyResponse(fetchSurveyPrompt(surveyQuestions, characteristics, individuals));
-    setSurveyQuestions("");
-    setCharacteristics("");
-    setIndividuals("");
+    if (!surveyQuestions || !characteristics || !individuals) {
+      toast.error("Please fill out all fields.");
+    } else {
+      await fetchSurveyResponse(
+        fetchSurveyPrompt(surveyQuestions, characteristics, individuals)
+      );
+      setSurveyQuestions("");
+      setCharacteristics("");
+      setIndividuals("");
+    }
   };
 
   return (
@@ -72,7 +78,7 @@ export default function SurveyForm() {
         {/* Submit Button */}
         <Button
           onClick={handleGenerateSurvey}
-          disabled={!surveyQuestions && loading }
+          disabled={!surveyQuestions && loading}
           text="Generate Survey"
           className="w-full bg-[#4e8d99] hover:bg-[#589eac]"
         />

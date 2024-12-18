@@ -1,6 +1,9 @@
-import { AppContextProvider } from "@/contexts/AppContext";
+import { AppContextProvider } from "@/context/AppContext";
 import "./globals.css";
 import Header from "@/components/Header";
+import Footer from "@/components/Footer";
+import { AuthContextProvider } from "@/context/AuthContext";
+import { Toaster } from "react-hot-toast";
 
 export const metadata = {
   title: "Ai-Survey",
@@ -11,12 +14,16 @@ export default function RootLayout({ children }) {
   return (
     <html lang="en">
       <body
-        className='h-full w-full bg-gray-100 overflow-y-auto'
+        className='h-dvh w-full bg-gray-100 relative'
       >
-        <AppContextProvider>
-          <Header />
-          {children}
-        </AppContextProvider>
+        <AuthContextProvider>
+          <AppContextProvider>
+            <Header />
+            <Toaster position="top-center" />
+            {children}
+            <Footer />
+          </AppContextProvider>
+        </AuthContextProvider>
       </body>
     </html>
   );

@@ -3,6 +3,7 @@ import { FaBars } from "react-icons/fa6";
 import { SiLimesurvey } from "react-icons/si";
 import Button from "./common/Button";
 import { useState } from "react";
+import Link from "next/link";
 
 export default function Header() {
   const [isOpen, setIsOpen] = useState(false);
@@ -21,21 +22,22 @@ export default function Header() {
       >
         <button>Pricing</button>
         <button className="text-[#6d445e]">AI Survey Examples</button>
+        <Link href={'/login'} className="underline text-[#4e8d99]">Login</Link>
       </div>
 
       <div className="flex items-center flex-row-reverse gap-2">
         {/* Mobile Menu Toggle Button */}
         <button
           onClick={() => setIsOpen(!isOpen)}
-          className="text-sm lg:hidden text-primary px-3 py-2 tracking-wide"
+          className="text-sm lg:hidden text-primary px-3 py-2 tracking-wide cursor-pointer"
         >
           <FaBars size={20} className="text-gray-500" />
         </button>
 
         {/* Login Button */}
-        <button className="hidden lg:block border-gray-300 border px-4 py-2 rounded-xl hover:bg-[#4e8d99] hover:text-gray-50">
+        <Link href={'/login'} className="hidden lg:block border-gray-300 border px-4 py-2 rounded-xl hover:bg-[#4e8d99] hover:text-gray-50">
           Login
-        </button>
+        </Link>
 
         {/* Get Started Button */}
         <Button

@@ -3,7 +3,7 @@ import { memo } from "react";
 import Button from "./common/Button";
 import ReactMarkdown from "react-markdown";
 import remarkGfm from "remark-gfm";
-import { useAppContext } from "@/contexts/AppContext";
+import { useAppContext } from "@/context/AppContext";
 
 const SurveyResults = () => {
   const { survey, setSurvey } = useAppContext();
@@ -13,7 +13,7 @@ const SurveyResults = () => {
   };
 
   return (
-    <section className="bg-white  flex-1 m-5 p-6 rounded-md shadow-md sticky top-24">
+    <section className="bg-white  flex-1 m-5 p-6 rounded-md shadow-md ">
       <div className="border-b-2 border-gray-200 ">
         <h2 className="text-lg font-bold text-gray-700 mb-4">Survey Results</h2>
       </div>
