@@ -81,7 +81,7 @@ const Contact = () => {
               AI Survey Generator
             </span>
             . Whether you have a question about features, pricing, or anything
-            else, our team is here to help. Fill out the form below, and we'll
+            else, our team is here to help. Fill out the form below, and we&apos;ll
             get back to you shortly.
           </p>
           <div className="max-w-lg w-full mx-auto bg-white p-5 shadow-md rounded-lg">

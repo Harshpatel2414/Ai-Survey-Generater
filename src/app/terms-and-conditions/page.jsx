@@ -35,7 +35,7 @@ const TermsAndConditions = () => {
                 
                 <h2 className="text-xl font-semibold text-[#4e8d99] mb-4">4. Liability</h2>
                 <p className="text-lg text-gray-700 leading-relaxed ">
-                    AI Survey Generator is not liable for incorrect survey results caused by inaccurate input data. We strive to ensure high-quality outputs, but final usage decisions are the user's responsibility.
+                    AI Survey Generator is not liable for incorrect survey results caused by inaccurate input data. We strive to ensure high-quality outputs, but final usage decisions are the user&apos;s responsibility.
                 </p>
             </div>
         </div>

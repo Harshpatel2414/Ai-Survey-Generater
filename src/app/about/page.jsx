@@ -17,7 +17,7 @@ const About = () => {
                     Welcome to <span className="font-semibold text-[#4e8d99]">AI Survey Generator</span>, a platform designed to help you create personalized surveys using advanced AI technology. Our goal is to simplify the process of gathering insights through customized surveys tailored to your specific needs.
                 </p>
                 <p className="text-lg text-gray-700 leading-relaxed mb-4">
-                    Whether you're conducting market research, collecting feedback, or analyzing trends, our platform ensures efficient and accurate survey creation. We charge based on the number of individual profiles generated for your surveys, providing a scalable and transparent pricing model.
+                    Whether you&apos;re conducting market research, collecting feedback, or analyzing trends, our platform ensures efficient and accurate survey creation. We charge based on the number of individual profiles generated for your surveys, providing a scalable and transparent pricing model.
                 </p>
                 <p className="text-lg text-gray-700 leading-relaxed mb-4">
                     Our team is dedicated to improving our service and incorporating your feedback to make AI Survey Generator even better. Thank you for choosing us for your survey needs.
