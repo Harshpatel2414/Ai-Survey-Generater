@@ -12,7 +12,7 @@ import { useRouter } from "next/navigation";
 import Checkout from "@/components/payment/Checkout";
 
 // Load Stripe with your public key
-const stripePromise = loadStripe(process.env.NEXT_APP_STRIPE_PUBLIC_KEY);
+const stripePromise = loadStripe(process.env.NEXT_PUBLIC_STRIPE_PUBLIC_KEY);
 
 const ProfilePage = () => {
   const [amount, setAmount] = useState(0);
