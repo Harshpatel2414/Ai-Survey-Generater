@@ -7,6 +7,7 @@ import fetchSurveyPrompt from "@/helpers/fetchSurveyPrompt";
 import { useAuth } from "@/context/AuthContext";
 import Link from "next/link";
 import Image from "next/image";
+import { useRouter } from "next/navigation";
 
 export default function SurveyForm() {
   const [surveyQuestions, setSurveyQuestions] = useState("");
@@ -17,9 +18,14 @@ export default function SurveyForm() {
   const [formError, setFormError] = useState("");
   const [showModal, setShowModal] = useState(false);
   const [amountNeeded, setAmountNeeded] = useState(0);
-
+  
+  const router = useRouter();
   const handleGenerateSurvey = async (e) => {
     e.preventDefault();
+    if (!currentUser) {
+      router.push("/login");
+      return;
+    }
     setFormError("");
     setLoading(true);
 
@@ -132,7 +138,7 @@ export default function SurveyForm() {
       {showModal && (
         <div className="fixed inset-0 bg-gray-900 bg-opacity-50 flex items-center justify-center z-50">
           <div className="bg-white p-5 rounded-lg shadow-lg text-center w-96 flex flex-col gap-4 items-center">
-            <Image src={'/wallet.png'} alt="wallet" width={200} height={200} />
+            <Image src={"/wallet.png"} alt="wallet" width={200} height={200} />
             <p className="mb-4">
               Insufficient funds. Please add <b>${amountNeeded}</b> to your
               wallet.
