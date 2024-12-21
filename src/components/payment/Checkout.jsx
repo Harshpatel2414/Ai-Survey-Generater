@@ -31,7 +31,7 @@ const Checkout = ({ amount, clientSecret }) => {
       elements,
       clientSecret: clientSecret,
       confirmParams: {
-        return_url: `${"http://localhost:3000"}/success?amount=${amount}&userId=${currentUser._id}&email=${currentUser.email}`,
+        return_url: `${"https://ai-survey-generater.vercel.app"}/success?amount=${amount}&userId=${currentUser._id}&email=${currentUser.email}`,
       },
       
     });
