@@ -5,11 +5,11 @@ import { Elements } from "@stripe/react-stripe-js";
 import { FaWallet } from "react-icons/fa6";
 import convertToSubcurrency from "@/utils/convertToSubcurrency";
 import { toast } from "react-hot-toast";
-import Checkout from "@/components/payment/checkout";
 import { useAuth } from "@/context/AuthContext";
 import Loading from "../../loading";
 import Image from "next/image";
 import { useRouter } from "next/navigation";
+import Checkout from "@/components/payment/Checkout";
 
 // Load Stripe with your public key
 const stripePromise = loadStripe(process.env.NEXT_PUBLIC_STRIPE_PUBLIC_KEY);
