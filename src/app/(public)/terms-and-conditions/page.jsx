@@ -10,9 +10,6 @@ const TermsAndConditions = () => {
     return (
         <div className="flex flex-col items-center bg-white px-5 py-10 hide-scrollbar animate-fadeIn">
             <div className="max-w-4xl h-fit w-full lg:w-3/4 bg-white rounded-lg px-0 py-8 md:p-8 relative lg:text-justify">
-                <Link href={'/about'} className="top-0 lg:top-4 right-4 absolute underline text-[#4e8d99]">
-                    Back
-                </Link>
                 <h1 className="text-3xl font-bold text-[#4e8d99] mb-6 text-center">Terms and Conditions</h1>
                 
                 <h2 className="text-xl font-semibold text-[#4e8d99] mb-4">1. Service Usage</h2>

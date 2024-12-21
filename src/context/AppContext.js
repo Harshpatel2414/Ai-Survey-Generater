@@ -12,17 +12,13 @@ export const AppContextProvider = ({ children }) => {
      
     const fetchSurveyResponse = async (prompt) => {
         try {
-          setSurvey(""); // Clear previous response
-          setLoading(true);
-    
+          setSurvey("");     
           await getModelResponse(prompt, (chunk) => {
             setSurvey((prev) => prev + chunk); // Append chunks to state
           });
         } catch (error) {
           console.error("Error fetching survey response:", error);
-        } finally {
-          setLoading(false);
-        }
+        } 
       };
 
     return (

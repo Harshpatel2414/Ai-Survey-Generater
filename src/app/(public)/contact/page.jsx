@@ -64,7 +64,7 @@ const Contact = () => {
           content="Contact the AI Survey Generator team for any questions, feedback, or support. Fill out the form to get in touch with us."
         />
       </Head>
-      <div className="flex flex-col items-center bg-white px-5  hide-scrollbar animate-fadeIn">
+      <div className="flex flex-1 h-dvh flex-col items-center bg-white px-5 py-10 hide-scrollbar animate-fadeIn">
         <div className="max-w-4xl h-fit w-full lg:w-3/4 rounded-lg px-0  md:p-8 ">
           <Link
             href="/"

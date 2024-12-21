@@ -1,13 +1,42 @@
-import { NextResponse } from "next/server";
+import { MongoClient } from 'mongodb';
+import bcrypt from 'bcrypt';
+import { NextResponse } from 'next/server';
 
-export const POST = async (request) => {
+export const POST = async (req) => {
+    const { username, email, password, image, termsAccepted } = await req.json();
+    const client = new MongoClient(process.env.MONGO_URI);
+
     try {
-        const data = await request.json();
-        // Process the payment success data here
-        console.log('Register user details', data);
+        await client.connect();
+        const db = client.db(process.env.DATABASE);
+        const collection = db.collection('Users');
 
-        return NextResponse.json({ message: 'User registered successfuly' }, { status: 200 });
+        const existingUser = await collection.findOne({ email });
+        if (existingUser) {
+            return NextResponse.json({ message: 'User already exists' }, { status: 400 });
+        }
+
+        const hashedPassword = await bcrypt.hash(password, 10);
+
+        const newUser = {
+            username,
+            email,
+            image,
+            password: hashedPassword,
+            termsAndConditionsAccepted: termsAccepted,
+            walletAmount: 0,
+            profilesGenerated: 0,
+        };
+
+        const result = await collection.insertOne(newUser);
+        return NextResponse.json({
+            message: 'Registration successful',
+            user: { id: result.insertedId, username, email, wallet: 0 },
+        }, { status: 201 });
     } catch (error) {
-        return NextResponse.json({ message: 'User registration failed', error: error.message }, { status: 500 });
+        console.error('Error registering user:', error);
+        return NextResponse.json({ message: 'Internal Server Error' }, { status: 500 });
+    } finally {
+        await client.close();
     }
-}
+};

@@ -1,35 +1,82 @@
 "use client";
+
 import { useState } from "react";
 import Button from "./common/Button";
 import { useAppContext } from "@/context/AppContext";
 import fetchSurveyPrompt from "@/helpers/fetchSurveyPrompt";
-import toast from "react-hot-toast";
+import { useAuth } from "@/context/AuthContext";
+import Link from "next/link";
+import Image from "next/image";
 
 export default function SurveyForm() {
   const [surveyQuestions, setSurveyQuestions] = useState("");
   const [characteristics, setCharacteristics] = useState("");
   const [individuals, setIndividuals] = useState("");
-  const { loading, fetchSurveyResponse } = useAppContext();
+  const { loading, setLoading, fetchSurveyResponse } = useAppContext();
+  const { currentUser, refreshUser } = useAuth();
+  const [formError, setFormError] = useState("");
+  const [showModal, setShowModal] = useState(false);
+  const [amountNeeded, setAmountNeeded] = useState(0);
 
-  // Handle form submission
-  const handleGenerateSurvey = async () => {
+  const handleGenerateSurvey = async (e) => {
+    e.preventDefault();
+    setFormError("");
+    setLoading(true);
+
     if (!surveyQuestions || !characteristics || !individuals) {
-      toast.error("Please fill out all fields.");
-    } else {
+      setFormError("Please fill out all fields.");
+      setLoading(false);
+      return;
+    }
+
+    const cost = calculateCost(individuals);
+    const amountNeeded = Math.max(0, cost - currentUser.walletAmount);
+
+    if (currentUser.walletAmount < cost) {
+      setAmountNeeded(amountNeeded);
+      setShowModal(true);
+      setLoading(false);
+      return;
+    }
+
+    try {
       await fetchSurveyResponse(
         fetchSurveyPrompt(surveyQuestions, characteristics, individuals)
       );
       setSurveyQuestions("");
       setCharacteristics("");
       setIndividuals("");
+
+      const response = await fetch("/api/wallet/deduct", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({ amount: cost, userId: currentUser._id }),
+      });
+      if (!response.ok) {
+        setFormError("Failed to deduct amount from wallet.");
+        return;
+      }
+
+      await refreshUser(); // Update user wallet details
+    } catch (error) {
+      setFormError("Something went wrong. Please try again.");
+      console.error(error);
+    } finally {
+      setLoading(false);
     }
+  };
+
+  const calculateCost = (numberOfProfiles) => {
+    const cost = 5 + numberOfProfiles * 0.1;
+    return parseFloat(cost.toFixed(2));
   };
 
   return (
     <div className="mx-auto p-5">
       <h1 className="text-2xl font-bold mb-5 text-center">AI Survey Form</h1>
       <form className="space-y-4">
-        {/* Survey Questions */}
         <div>
           <label className="block text-sm font-medium mb-1">
             Survey Questions
@@ -44,7 +91,6 @@ export default function SurveyForm() {
           />
         </div>
 
-        {/* Survey Group Characteristics */}
         <div>
           <label className="block text-sm font-medium mb-1">
             Survey Group Characteristics
@@ -59,7 +105,6 @@ export default function SurveyForm() {
           />
         </div>
 
-        {/* Number of Individuals */}
         <div>
           <label className="block text-sm font-medium mb-1">
             Number of Individuals
@@ -75,14 +120,40 @@ export default function SurveyForm() {
           />
         </div>
 
-        {/* Submit Button */}
+        {formError && <p className="text-red-500">{formError}</p>}
         <Button
-          onClick={handleGenerateSurvey}
-          disabled={!surveyQuestions && loading}
-          text="Generate Survey"
+          onClick={(e) => handleGenerateSurvey(e)}
+          disabled={loading}
+          text={`Generate Survey - $${calculateCost(individuals)}`}
           className="w-full bg-[#4e8d99] hover:bg-[#589eac]"
         />
       </form>
+
+      {showModal && (
+        <div className="fixed inset-0 bg-gray-900 bg-opacity-50 flex items-center justify-center z-50">
+          <div className="bg-white p-5 rounded-lg shadow-lg text-center w-96 flex flex-col gap-4 items-center">
+            <Image src={'/wallet.png'} alt="wallet" width={200} height={200} />
+            <p className="mb-4">
+              Insufficient funds. Please add <b>${amountNeeded}</b> to your
+              wallet.
+            </p>
+            <div className="flex justify-center gap-4">
+              <button
+                onClick={() => setShowModal(false)}
+                className="py-2 px-4 bg-gray-300 rounded-md hover:bg-gray-400"
+              >
+                Cancel
+              </button>
+              <Link
+                href="/profile"
+                className="py-2 px-4 bg-[#4e8d99] text-white rounded-md hover:bg-[#589eac]"
+              >
+                Add Money
+              </Link>
+            </div>
+          </div>
+        </div>
+      )}
     </div>
   );
 }
