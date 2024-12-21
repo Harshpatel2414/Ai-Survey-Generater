@@ -1,3 +1,4 @@
+export const maxDuration = 30;
 import { MongoClient, ObjectId } from 'mongodb';
 import { NextResponse } from 'next/server';
 

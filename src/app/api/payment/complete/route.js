@@ -1,4 +1,4 @@
-
+export const maxDuration = 60;
 import { MongoClient, ObjectId } from 'mongodb';
 import { NextResponse } from 'next/server';
 import Stripe from 'stripe';
