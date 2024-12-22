@@ -11,7 +11,7 @@ import {
 import Link from "next/link"; // Importing Link from Next.js
 
 const Sidebar = () => {
-  const [isCollapsed, setIsCollapsed] = useState(false); // State to handle collapse
+  const [isCollapsed, setIsCollapsed] = useState(true); // State to handle collapse
 
   const toggleSidebar = () => {
     setIsCollapsed(!isCollapsed);

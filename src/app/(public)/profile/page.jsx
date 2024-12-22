@@ -94,8 +94,8 @@ const ProfilePage = () => {
           className="h-20 w-20 rounded-full object-center object-cover border-2 border-white"
           />
         <div className="items-center flex flex-col gap-2">
-          <p className="text-white text-lg font-semibold">{currentUser?.username}</p>
-          <p className="text-gray-300 ">{currentUser?.email}</p>
+          <p className="text-white text-lg font-semibold capitalize">{currentUser?.username}</p>
+          <p className="text-gray-300">{currentUser?.email}</p>
         </div>
           {newUser === "true" && (
             <div className=" p-4 rounded-md w-full text-center mb-5">

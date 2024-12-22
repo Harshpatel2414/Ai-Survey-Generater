@@ -63,7 +63,7 @@ const AdminLayout = ({ children }) => {
         <div className="flex h-full w-full">
           <Sidebar />
           {/* Main Content */}
-          <div className="flex-1 w-full h-full flex bg-gray-100">{children}</div>
+          <div className="flex-1 w-full h-full flex bg-gray-100 overflow-auto">{children}</div>
         </div>
       )}
     </div>

@@ -42,7 +42,7 @@ export default function Header() {
         {/* Show Profile Dropdown or Login / Get Started Button */}
         {currentUser ? (
           <div className="items-center gap-4 hidden lg:flex">
-            <p>{currentUser?.username}</p>
+            <p className="capitalize font-semibold">{currentUser?.username}</p>
             <Image
               height={40}
               width={40}
@@ -90,7 +90,7 @@ export default function Header() {
               alt="profile"
               className="w-10 h-10 rounded-full object-cover object-center border-2 border-[#4e8d99]"
             />
-            <p className="font-semibold text-lg">{currentUser?.username}</p>
+            <p className="font-semibold text-lg capitalize">{currentUser?.username}</p>
             <p className=" text-gray-500">
               Balance: ${currentUser?.walletAmount}
             </p>
