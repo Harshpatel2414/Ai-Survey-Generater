@@ -73,8 +73,8 @@ const RegisterPage = () => {
 
       if (response.ok) {
         toast.success(result.message);
+        router.push("/profile?newUser=true");
         setCurrentUser(result.user);
-        router.push("/profile");
       } else {
         toast.error(result.message);
       }
@@ -85,10 +85,6 @@ const RegisterPage = () => {
       setLoading(false);
     }
   };
-
-  if (currentUser) {
-    router.push("/");
-  }
 
   return (
     <div className="flex flex-col items-center justify-center h-full pt-20 p-4 bg-gray-100">

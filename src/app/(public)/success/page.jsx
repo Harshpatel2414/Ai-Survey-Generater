@@ -10,6 +10,7 @@ const Success = () => {
   const searchParams = useSearchParams(); 
   const { refreshUser } = useAuth();
   const [loading, setLoading] = useState(false);
+  const [currentDate, setCurrentDate] = useState(null);
 
   // Extract parameters from the URL using searchParams
   const amount = searchParams.get("amount");
@@ -19,7 +20,7 @@ const Success = () => {
   const redirectStatus = searchParams.get("redirect_status");
 
   useEffect(() => {
-    // If payment is unsuccessful or missing necessary data, show an error
+    setCurrentDate(new Date().toLocaleString());
     if (!paymentIntentId || !redirectStatus || redirectStatus !== "succeeded") {
       toast.error("Payment failed or invalid redirect status.");
       router.push("/profile");
@@ -32,7 +33,7 @@ const Success = () => {
       amount: parseInt(amount),
       userId,
       email,
-      date: new Date().toISOString(),
+      date: currentDate,
     };
 
     // Function to call the backend API to complete payment
@@ -69,12 +70,12 @@ const Success = () => {
     <div className="flex flex-col items-center justify-center h-screen bg-white">
       <div className="bg-white p-6 rounded text-center flex flex-col items-center justify-center w-96">
         <h1 className="text-2xl font-bold text-[#4e8d99]">Payment Successful!</h1>
-        <p className="text-gray-600 mt-2">Transaction ID: {"paymentIntentId"}</p>
+        <p className="text-gray-600 mt-2">Transaction ID: {paymentIntentId}</p>
         <Image src="/success1.png" width={200} height={180} alt="Success" />
-        <p className="text-2xl font-semibold text-[#4e8d99]">${"amount"}</p>
-        <p className="text-gray-500 text-sm">{new Date().toLocaleString()}</p>
+        <p className="text-2xl font-semibold text-[#4e8d99]">${amount}</p>
+        <p className="text-gray-500 text-sm">{currentDate}</p>
         <button
-          onClick={() => router.push("/profile")}
+          onClick={() => router.push("/wallet")}
           className="mt-4 bg-[#4e8d99] text-white px-4 py-2 rounded w-80"
           disabled={loading}
         >

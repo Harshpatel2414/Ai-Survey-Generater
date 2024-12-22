@@ -27,11 +27,11 @@ const LoginPage = () => {
       });
       const result = await response.json();
       if (response.ok) {
-                toast.success(result.message)
-                router.push('/')
-                setCurrentUser(result.user)
+        toast.success(result.message);
+        router.push("/");
+        setCurrentUser(result.user);
       } else {
-                toast.error(result.message)
+        toast.error(result.message);
       }
     } catch (error) {
       console.error("Error:", error.message);
@@ -40,8 +40,8 @@ const LoginPage = () => {
     }
   };
 
-    if(currentUser){
-        router.push('/')
+  if (currentUser) {
+    router.push("/");
   }
 
   return (

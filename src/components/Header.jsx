@@ -8,6 +8,7 @@ import { useAuth } from "@/context/AuthContext";
 import { useRouter } from "next/navigation";
 import Image from "next/image";
 import { FaChevronDown, FaChevronUp } from "react-icons/fa";
+import toast from "react-hot-toast";
 
 export default function Header() {
   const [isDropdownOpen, setIsDropdownOpen] = useState(false);
@@ -108,7 +109,12 @@ export default function Header() {
             {/* Logout Button */}
             <Button
               text="Logout"
-              onClick={handleLogout}
+              onClick={()=>{
+                setIsDropdownOpen(false);
+                toast.success("Logged out successfully");
+                handleLogout();
+              }
+              }
               className="!rounded-xl !hover:bg-[#589eac]"
             />
           </div>

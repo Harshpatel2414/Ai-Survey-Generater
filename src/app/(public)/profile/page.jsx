@@ -8,7 +8,7 @@ import { toast } from "react-hot-toast";
 import { useAuth } from "@/context/AuthContext";
 import Loading from "../../loading";
 import Image from "next/image";
-import { useRouter } from "next/navigation";
+import { useRouter, useSearchParams } from "next/navigation";
 import Checkout from "@/components/payment/Checkout";
 
 // Load Stripe with your public key
@@ -23,6 +23,8 @@ const ProfilePage = () => {
   const [transactions, setTransactions] = useState([]);
   const { currentUser } = useAuth();
   const router = useRouter();
+  const searchParams = useSearchParams(); 
+  const newUser = searchParams.get("newUser");
 
   useEffect(() => {
     if (!currentUser) return;
@@ -83,18 +85,25 @@ const ProfilePage = () => {
   return (
     <div className="flex flex-col items-center justify-center pb-10">
       {/* Wallet Summary - Only visible when not adding money */}
-      <div className="bg-[#4e8d99] w-full h-80 flex flex-col items-center justify-center py-10 gap-4">
+      <div className="bg-[#4e8d99] w-full h-fit flex flex-col items-center justify-center py-16 gap-4">
         <Image
           src={currentUser?.image || "/user.png"}
           alt="avatar"
           width={80}
           height={80}
           className="h-20 w-20 rounded-full object-center object-cover border-2 border-white"
-        />
+          />
         <div className="items-center flex flex-col gap-2">
           <p className="text-white text-lg font-semibold">{currentUser?.username}</p>
           <p className="text-gray-300 ">{currentUser?.email}</p>
         </div>
+          {newUser === "true" && (
+            <div className=" p-4 rounded-md w-full text-center mb-5">
+              <p className="text-white text-lg ">
+                Add money to your wallet to generate a survey.
+              </p>
+            </div>
+          )}
       </div>
       <div className="flex items-center flex-col gap-5 w-full px-5 md:px-10 lg:px-20 -translate-y-10">
         {!isAddingMoney && (
@@ -120,7 +129,7 @@ const ProfilePage = () => {
                 value={amount}
                 onChange={(e) => setAmount(Number(e.target.value))}
                 placeholder="Enter amount"
-                className="p-2 outline-none border border-[#4e8d99] rounded-md w-full md:w-80"
+                className="p-2 outline-none border border-[#4e8d99] rounded-md w-full md:w-80 text-center"
                 min="10"
               />
               <button
