@@ -13,15 +13,8 @@ export const GET = async (req, { params }) => {
 
     // Find transactions for the given userId
     const transactions = await transactionCollection.find({ userId: id }).toArray();
-
-    if (!transactions.length) {
-      return NextResponse.json(
-        { message: `No transactions found for userId: ${id}` },
-        { status: 404 }
-      );
-    }
-
-    return NextResponse.json({ transactions }, { status: 200 });
+    
+    return NextResponse.json({ transactions: transactions || [] }, { status: 200 });
   } catch (error) {
     console.error('Error fetching transactions:', error);
     return NextResponse.json({ message: 'Internal Server Error' }, { status: 500 });

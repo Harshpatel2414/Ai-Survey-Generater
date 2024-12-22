@@ -67,15 +67,15 @@ const Success = () => {
 
   return (
     <div className="flex flex-col items-center justify-center h-screen bg-white">
-      <div className="bg-white p-6 rounded text-center">
+      <div className="bg-white p-6 rounded text-center flex flex-col items-center justify-center w-96">
         <h1 className="text-2xl font-bold text-[#4e8d99]">Payment Successful!</h1>
-        <p className="text-gray-600 mt-2">Transaction ID: {paymentIntentId}</p>
+        <p className="text-gray-600 mt-2">Transaction ID: {"paymentIntentId"}</p>
         <Image src="/success1.png" width={200} height={180} alt="Success" />
-        <p className="text-2xl font-semibold text-[#4e8d99]">${amount}</p>
+        <p className="text-2xl font-semibold text-[#4e8d99]">${"amount"}</p>
         <p className="text-gray-500 text-sm">{new Date().toLocaleString()}</p>
         <button
-          onClick={() => router.push("/wallet")}
-          className="mt-4 bg-[#4e8d99] text-white px-4 py-2 rounded"
+          onClick={() => router.push("/profile")}
+          className="mt-4 bg-[#4e8d99] text-white px-4 py-2 rounded w-80"
           disabled={loading}
         >
           {loading ? "Wait..." : "Go to Wallet"}

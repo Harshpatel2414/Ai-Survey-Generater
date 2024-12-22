@@ -8,6 +8,7 @@ import { useAuth } from "@/context/AuthContext";
 import Link from "next/link";
 import Image from "next/image";
 import { useRouter } from "next/navigation";
+import toast from "react-hot-toast";
 
 export default function SurveyForm() {
   const [surveyQuestions, setSurveyQuestions] = useState("");
@@ -22,15 +23,44 @@ export default function SurveyForm() {
   const router = useRouter();
   const handleGenerateSurvey = async (e) => {
     e.preventDefault();
-    if (!currentUser) {
-      router.push("/login");
-      return;
-    }
     setFormError("");
     setLoading(true);
-
+    
     if (!surveyQuestions || !characteristics || !individuals) {
       setFormError("Please fill out all fields.");
+      setLoading(false);
+      return;
+    }
+
+    if (!currentUser) {
+      toast(
+        (t) => (
+          <div >
+            <p className="mb-2">Please log in or register to continue to Generate Survey</p>
+            <div className="flex gap-2 items-center justify-center">
+              <button
+                className="py-1 px-4 bg-white border rounded-lg text-gray-600 hover:bg-gray-100"
+                onClick={() => {
+                  toast.dismiss(t.id);
+                  router.push("/login");
+                }}
+              >
+                Login
+              </button>
+              <button
+                className="py-1 px-4 bg-[#4e8d99] text-white rounded-md hover:bg-[#5da2a5]"
+                onClick={() => {
+                  toast.dismiss(t.id);
+                  router.push("/register");
+                }}
+              >
+                Register
+              </button>
+            </div>
+          </div>
+        ),
+        { duration: 5000 }
+      );
       setLoading(false);
       return;
     }
@@ -64,8 +94,7 @@ export default function SurveyForm() {
         setFormError("Failed to deduct amount from wallet.");
         return;
       }
-
-      await refreshUser(); // Update user wallet details
+      await refreshUser(); 
     } catch (error) {
       setFormError("Something went wrong. Please try again.");
       console.error(error);

@@ -32,7 +32,7 @@ export const POST = async (req) => {
         const result = await collection.insertOne(newUser);
         return NextResponse.json({
             message: 'Registration successful',
-            user: { id: result.insertedId, username, email, wallet: 0 },
+            user: { id: result.insertedId, username, email,image, walletAmount: 0 },
         }, { status: 201 });
     } catch (error) {
         console.error('Error registering user:', error);

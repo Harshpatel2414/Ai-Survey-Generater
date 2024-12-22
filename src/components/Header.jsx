@@ -23,10 +23,10 @@ export default function Header() {
         <SiLimesurvey size={30} className="text-[#4e8d99]" />
         <h1 className="text-lg font-bold text-primary">AI-Survey</h1>
       </Link>
-      <div className="gap-2 items-center hidden md:flex text-[#4e8d99]">
-        <Link href={"/"}>Home</Link>
-        <Link href={"/about"}>About</Link>
-        <Link href={"/contact"}>Contact</Link>
+      <div className="gap-5 items-center hidden md:flex text-[#4e8d99]">
+        <Link className="hover:text-[#6d445e]" href={"/"}>Home</Link>
+        <Link className="hover:text-[#6d445e]" href={"/about"}>About</Link>
+        <Link className="hover:text-[#6d445e]" href={"/contact"}>Contact</Link>
       </div>
 
       <div className="flex items-center flex-row-reverse gap-2">
@@ -61,10 +61,10 @@ export default function Header() {
             </button>
           </div>
         ) : (
-          <>
+          <div className="hidden lg:flex gap-2">
             <Link
               href="/login"
-              className="hidden lg:block border-gray-300 border px-4 py-2 rounded-xl hover:bg-[#4e8d99] hover:text-gray-50"
+              className="border-gray-300 border px-4 py-2 rounded-xl hover:bg-[#4e8d99] hover:text-gray-50"
             >
               Login
             </Link>
@@ -74,14 +74,14 @@ export default function Header() {
               text="Get Started"
               className="!rounded-xl !bg-[#4e8d99] !hover:bg-[#589eac]"
             />
-          </>
+          </div>
         )}
       </div>
 
       {/* Dropdown Menu for large devices (below the header) */}
-      {isDropdownOpen && (
+      {isDropdownOpen && currentUser && (
         <div className="absolute top-20 right-5 bg-white shadow-md p-4 mt-2 rounded-md w-60 z-50">
-          { currentUser && <div className="flex flex-col gap-2 justify-start">
+          <div className="flex flex-col gap-2 justify-start">
             <Image
               height={40}
               width={40}
@@ -111,13 +111,31 @@ export default function Header() {
               onClick={handleLogout}
               className="!rounded-xl !hover:bg-[#589eac]"
             />
-          </div>}
-            {!currentUser &&<div className="gap-2  items-center flex flex-col text-[#4e8d99] underline">
-              <Link onClick={()=> setIsDropdownOpen(false)} href={"/"}>Home</Link>
-              <Link onClick={()=> setIsDropdownOpen(false)} href={"/about"}>About</Link>
-              <Link onClick={()=> setIsDropdownOpen(false)} href={"/contact"}>Contact</Link>
-              {!currentUser && <Link className="text-[#6d445e]" onClick={()=> setIsDropdownOpen(false)} href={"/login"}>Login</Link>}
-            </div>}
+          </div>
+        </div>
+      )}
+
+      {/* Handle the case when logged out */}
+      {isDropdownOpen && !currentUser && (
+        <div className="absolute top-20 right-5 bg-white shadow-md mt-2 rounded-md w-60 z-50">
+          <div className="flex flex-col gap-2 lg:hidden items-center text-[#4e8d99] m-4">
+            <Link onClick={() => setIsDropdownOpen(false)} href={"/"}>
+              Home
+            </Link>
+            <Link onClick={() => setIsDropdownOpen(false)} href={"/about"}>
+              About
+            </Link>
+            <Link onClick={() => setIsDropdownOpen(false)} href={"/contact"}>
+              Contact
+            </Link>
+            <Link
+              className="text-[#6d445e]"
+              onClick={() => setIsDropdownOpen(false)}
+              href={"/login"}
+            >
+              Login
+            </Link>
+          </div>
         </div>
       )}
     </header>

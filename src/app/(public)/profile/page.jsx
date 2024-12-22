@@ -30,11 +30,10 @@ const ProfilePage = () => {
       setTransactionLoading(true);
       try {
         const response = await fetch(`/api/transactions/${currentUser._id}`);
-        if (!response.ok) {
-          throw new Error("Failed to fetch transactions.");
+        if(response.ok){
+          const data = await response.json();
+          setTransactions(data.transactions);
         }
-        const data = await response.json();
-        setTransactions(data.transactions);
       } catch (error) {
         console.error("Error fetching transactions:", error);
         toast.error("Unable to load transaction history.");
