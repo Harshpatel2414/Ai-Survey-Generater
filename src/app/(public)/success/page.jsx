@@ -10,7 +10,6 @@ const Success = () => {
   const searchParams = useSearchParams(); 
   const { refreshUser } = useAuth();
   const [loading, setLoading] = useState(false);
-  const [currentDate, setCurrentDate] = useState(null);
 
   // Extract parameters from the URL using searchParams
   const amount = searchParams.get("amount");
@@ -20,7 +19,7 @@ const Success = () => {
   const redirectStatus = searchParams.get("redirect_status");
 
   useEffect(() => {
-    setCurrentDate(new Date().toLocaleString());
+    // If payment is unsuccessful or missing necessary data, show an error
     if (!paymentIntentId || !redirectStatus || redirectStatus !== "succeeded") {
       toast.error("Payment failed or invalid redirect status.");
       router.push("/profile");
@@ -33,7 +32,7 @@ const Success = () => {
       amount: parseInt(amount),
       userId,
       email,
-      date: currentDate,
+      date: new Date().toISOString(),
     };
 
     // Function to call the backend API to complete payment
@@ -73,7 +72,7 @@ const Success = () => {
         <p className="text-gray-600 mt-2">Transaction ID: {paymentIntentId}</p>
         <Image src="/success1.png" width={200} height={180} alt="Success" />
         <p className="text-2xl font-semibold text-[#4e8d99]">${amount}</p>
-        <p className="text-gray-500 text-sm">{currentDate}</p>
+        <p className="text-gray-500 text-sm">{new Date().toLocaleString()}</p>
         <button
           onClick={() => router.push("/wallet")}
           className="mt-4 bg-[#4e8d99] text-white px-4 py-2 rounded w-80"
