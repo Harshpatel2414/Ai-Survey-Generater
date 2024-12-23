@@ -36,6 +36,7 @@ export const AuthContextProvider = ({ children }) => {
     setLoading(true); 
     setCurrentUser(null);
     setSurvey("");
+    localStorage.clear();
     await fetch("/api/logout");
     setLoading(false); 
   };

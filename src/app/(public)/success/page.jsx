@@ -4,11 +4,13 @@ import { useRouter, useSearchParams } from "next/navigation";
 import { toast } from "react-hot-toast";
 import Image from "next/image";
 import { useAuth } from "@/context/AuthContext";
+import { useAppContext } from "@/context/AppContext";
 
 const Success = () => {
   const router = useRouter();
   const searchParams = useSearchParams(); 
   const { refreshUser } = useAuth();
+  const { setIsProcessPayment } = useAppContext();
   const [loading, setLoading] = useState(false);
 
   // Extract parameters from the URL using searchParams
@@ -59,7 +61,8 @@ const Success = () => {
         console.error("Error:", error);
     } finally {
         setLoading(false);
-        router.replace("/"); 
+        setIsProcessPayment(true)
+        router.push("/"); 
       }
     };
 
@@ -75,7 +78,7 @@ const Success = () => {
         <p className="text-2xl font-semibold text-[#4e8d99]">${amount}</p>
         <p className="text-gray-500 text-sm">{date}</p>
         <button
-          onClick={() => router.replace("/profile")}
+          onClick={() => router.push("/profile")}
           className="mt-4 bg-[#4e8d99] text-white px-4 py-2 rounded w-80"
           disabled={loading}
         >

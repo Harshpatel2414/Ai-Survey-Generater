@@ -1,5 +1,5 @@
-"use client"
-import { useState, useEffect } from "react";
+"use client";
+import { useState, useEffect, useRef } from "react";
 import Button from "./common/Button";
 import { useAppContext } from "@/context/AppContext";
 import fetchSurveyPrompt from "@/helpers/fetchSurveyPrompt";
@@ -14,23 +14,44 @@ export default function SurveyForm() {
   const [surveyQuestions, setSurveyQuestions] = useState("");
   const [characteristics, setCharacteristics] = useState("");
   const [individuals, setIndividuals] = useState("");
-  
-  const { loading, setLoading, fetchSurveyResponse } = useAppContext();
+
+  const {
+    loading,
+    setLoading,
+    fetchSurveyResponse,
+    isProcessPayment,
+    setIsProcessPayment,
+    formdata,
+    setFormData,
+  } = useAppContext();
   const { currentUser, refreshUser } = useAuth();
   const [formError, setFormError] = useState("");
   const [showModal, setShowModal] = useState(false);
   const [amountNeeded, setAmountNeeded] = useState(0);
+  const buttonRef = useRef(null);
 
   const router = useRouter();
-  useEffect(() => {
-    const savedSurveyQuestions = localStorage.getItem("surveyQuestions");
-    const savedCharacteristics = localStorage.getItem("characteristics");
-    const savedIndividuals = localStorage.getItem("individuals");
 
-    if (savedSurveyQuestions) setSurveyQuestions(savedSurveyQuestions);
-    if (savedCharacteristics) setCharacteristics(savedCharacteristics);
-    if (savedIndividuals) setIndividuals(savedIndividuals);
+  useEffect(() => {
+    const data = localStorage.getItem("formData");
+    if (data) {
+      const { surveyQuestions, characteristics, individuals } =
+        JSON.parse(data);
+      setSurveyQuestions(surveyQuestions);
+      setCharacteristics(characteristics);
+      setIndividuals(individuals);
+    }
   }, []);
+
+  // Automatically generate survey if needed
+  useEffect(() => {
+    if (surveyQuestions && characteristics && individuals && isProcessPayment) {
+      setIsProcessPayment(false);
+      if (buttonRef.current) {
+        buttonRef.current.click();
+      }
+    }
+  }, [surveyQuestions, characteristics, individuals, isProcessPayment]);
 
   // Handle form input changes and store values in refs and state
   const handleChange = (e) => {
@@ -38,13 +59,10 @@ export default function SurveyForm() {
 
     if (name === "surveyQuestions") {
       setSurveyQuestions(value);
-      localStorage.setItem("surveyQuestions", value);
     } else if (name === "characteristics") {
       setCharacteristics(value);
-      localStorage.setItem("characteristics", value);
     } else if (name === "individuals") {
       setIndividuals(value);
-      localStorage.setItem("individuals", value);
     }
   };
 
@@ -52,7 +70,11 @@ export default function SurveyForm() {
     e.preventDefault();
     setFormError("");
     setLoading(true);
-
+    setFormData({ surveyQuestions, characteristics, individuals });
+    localStorage.setItem(
+      "formData",
+      JSON.stringify({ surveyQuestions, characteristics, individuals })
+    );
     if (!surveyQuestions || !characteristics || !individuals) {
       setFormError("Please fill out all fields.");
       setLoading(false);
@@ -63,7 +85,9 @@ export default function SurveyForm() {
       toast(
         (t) => (
           <div>
-            <p className="mb-2">Please log in or register to continue to Generate Survey</p>
+            <p className="mb-2">
+              Please log in or register to continue to Generate Survey
+            </p>
             <div className="flex gap-2 items-center justify-center">
               <button
                 className="py-1 px-4 bg-white border rounded-lg text-gray-600 hover:bg-gray-100"
@@ -96,7 +120,7 @@ export default function SurveyForm() {
     const amountNeeded = Math.max(0, cost - currentUser.walletAmount);
 
     if (currentUser.walletAmount < cost) {
-      setAmountNeeded(amountNeeded);
+      setAmountNeeded(amountNeeded.toFixed(2));
       setShowModal(true);
       setLoading(false);
       return;
@@ -109,7 +133,12 @@ export default function SurveyForm() {
       setSurveyQuestions("");
       setCharacteristics("");
       setIndividuals("");
-      localStorage.clear();
+      setFormData({
+        surveyQuestions: "",
+        characteristics: "",
+        individuals: "",
+      })
+      localStorage.removeItem("formData");
 
       const response = await fetch("/api/wallet/deduct", {
         method: "POST",
@@ -141,7 +170,9 @@ export default function SurveyForm() {
       <h1 className="text-2xl font-bold mb-5 text-center">AI Survey Form</h1>
       <form className="space-y-4">
         <div>
-          <label className="block text-sm font-medium mb-1">Survey Questions</label>
+          <label className="block text-sm font-medium mb-1">
+            Survey Questions
+          </label>
           <textarea
             name="surveyQuestions"
             value={surveyQuestions}
@@ -153,7 +184,9 @@ export default function SurveyForm() {
         </div>
 
         <div>
-          <label className="block text-sm font-medium mb-1">Survey Group Characteristics</label>
+          <label className="block text-sm font-medium mb-1">
+            Survey Group Characteristics
+          </label>
           <input
             type="text"
             name="characteristics"
@@ -165,7 +198,9 @@ export default function SurveyForm() {
         </div>
 
         <div>
-          <label className="block text-sm font-medium mb-1">Number of Individuals</label>
+          <label className="block text-sm font-medium mb-1">
+            Number of Individuals
+          </label>
           <input
             type="number"
             name="individuals"
@@ -179,6 +214,7 @@ export default function SurveyForm() {
 
         {formError && <p className="text-red-500">{formError}</p>}
         <Button
+          ref={buttonRef}
           onClick={(e) => handleGenerateSurvey(e)}
           disabled={loading}
           text={`Generate Survey $${calculateCost(individuals)}`}
@@ -191,7 +227,8 @@ export default function SurveyForm() {
           <div className="bg-white p-5 rounded-lg shadow-lg text-center w-96 flex flex-col gap-4 items-center">
             <Image src={"/wallet.png"} alt="wallet" width={200} height={200} />
             <p className="mb-4">
-              Insufficient funds. Please add <b>${amountNeeded}</b> to your wallet.
+              Insufficient funds. Please add <b>${amountNeeded}</b> to your
+              wallet.
             </p>
             <div className="flex justify-center gap-4">
               <button

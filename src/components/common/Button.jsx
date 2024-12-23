@@ -1,6 +1,7 @@
-export default function Button({ text, onClick, type = 'button', className, size='small', icon, disabled }) {
+export default function Button({ text, onClick, type = 'button', className, size='small', icon, disabled ,ref}) {
     return (
       <button
+        ref={ref}
         type={type}
         disabled={disabled}
         onClick={onClick}
