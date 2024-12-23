@@ -28,28 +28,22 @@ export const POST = async (req) => {
             password: hashedPassword,
             termsAndConditionsAccepted: termsAccepted,
             walletAmount: 0,
+            profilesGenerated: 0,
         };
 
         const result = await collection.insertOne(newUser);
         const token = createToken(result.insertedId);
 
-        const response = NextResponse.json(
-            {
-                message: 'Registration successful',
-                user: { _id: result.insertedId, username, email, image, walletAmount: 0 },
-            },
-            { status: 201 }
-        );
-
-        response.cookies.set('jwtAuth', token, {
+        cookies().set("jwtAuth", token, {
             httpOnly: true,
-            path: '/',
-            secure: true,
-            sameSite: 'strict',
-            maxAge: 24 * 60 * 60, // 1 day
+            path: "/",
+            maxAge: 24 * 60 * 60
         });
 
-        return response;
+        return NextResponse.json({
+            message: 'Registration successful',
+            user: { _id: result.insertedId, username, email,image, walletAmount: 0 },
+        }, { status: 201 });
     } catch (error) {
         console.error('Error registering user:', error);
         return NextResponse.json({ message: 'Internal Server Error' }, { status: 500 });

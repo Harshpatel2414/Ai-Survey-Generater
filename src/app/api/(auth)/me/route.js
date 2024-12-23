@@ -32,7 +32,6 @@ export const GET = async (req) => {
 
     return NextResponse.json(user, { status: 200 });
   } catch (error) {
-    console.error('JWT verification error:', error.message);
     return NextResponse.json({ message: 'Internal Server Error' }, { status: 500 });
   }
 };

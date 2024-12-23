@@ -24,21 +24,17 @@ export const POST = async (req) => {
     if (!isPasswordValid) {
       return NextResponse.json({ message: 'Invalid password' }, { status: 400 });
     }
-    delete user.password;
+    
     const token = createToken(user._id);
-    const response = NextResponse.json(
-      { message: 'Login successful', user },
-      { status: 200 }
-    );
-    response.cookies.set('jwtAuth', token, {
-      httpOnly: true,
-      path: '/',
-      secure: true,
-      sameSite: 'strict',
-      maxAge: 24 * 60 * 60, // 1 day
+    cookies().set("jwtAuth", token, {
+        httpOnly: true,
+        path: "/",
+        maxAge: 24 * 60 * 60
     });
 
-    return response;
+    delete user.password;
+
+    return NextResponse.json({ message: 'Login successful', user }, { status: 200 });
   } catch (error) {
     console.error('Error logging in user:', error);
     return NextResponse.json({ message: 'Internal Server Error' }, { status: 500 });

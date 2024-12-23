@@ -21,7 +21,7 @@ export const AuthContextProvider = ({ children }) => {
     try {
       const response = await fetch(`/api/me`);
       if (!response.ok) {
-        throw new Error("Failed to fetch user data.");
+        return;
       }
       const data = await response.json();
       setCurrentUser(data);
