@@ -83,14 +83,16 @@ export default function Header() {
       {isDropdownOpen && currentUser && (
         <div className="absolute top-20 right-5 bg-white shadow-md p-4 mt-2 rounded-md w-60 z-50">
           <div className="flex flex-col gap-2 justify-start">
+            <div className="flex items-center gap-2 border-b pb-4">
             <Image
               height={40}
               width={40}
               src={currentUser?.image || "/user.png"}
               alt="profile"
               className="w-10 h-10 rounded-full object-cover object-center border-2 border-[#4e8d99]"
-            />
-            <p className="font-semibold text-lg capitalize">{currentUser?.username}</p>
+              />
+            <p className="font-semibold text-lg capitalize flex-1 truncate">{currentUser?.username}</p>
+              </div>
             <p className=" text-gray-500">
               Balance: ${currentUser?.walletAmount}
             </p>

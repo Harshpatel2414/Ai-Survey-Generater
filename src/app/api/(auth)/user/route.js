@@ -11,7 +11,6 @@ export const GET = async (req) => {
 
     const user = await collection.find().project({username: 1, email: 1, _id: 1,walletAmount:1}).toArray();
 
-
     return NextResponse.json( user , { status: 200 });
   } catch (error) {
     console.error('Error logging in user:', error);

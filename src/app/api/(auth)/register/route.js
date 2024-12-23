@@ -2,6 +2,8 @@ export const maxDuration = 30;
 import { MongoClient } from 'mongodb';
 import bcrypt from 'bcrypt';
 import { NextResponse } from 'next/server';
+import { cookies } from 'next/headers';
+import jwt from 'jsonwebtoken';
 
 export const POST = async (req) => {
     const { username, email, password, image, termsAccepted } = await req.json();
@@ -30,6 +32,14 @@ export const POST = async (req) => {
         };
 
         const result = await collection.insertOne(newUser);
+        const token = createToken(result.insertedId);
+
+        await cookies().set("jwtAuth", token, {
+            httpOnly: true,
+            path: "/",
+            maxAge: 24 * 60 * 60
+        });
+
         return NextResponse.json({
             message: 'Registration successful',
             user: { _id: result.insertedId, username, email,image, walletAmount: 0 },
@@ -40,4 +50,13 @@ export const POST = async (req) => {
     } finally {
         await client.close();
     }
+};
+
+const maxAge = 24 * 60 * 60;
+const sec_key = process.env.NEXT_PUBLIC_JWT_SECRET;
+
+const createToken = (id) => {
+    return jwt.sign({ id }, sec_key, {
+        expiresIn: maxAge
+    });
 };

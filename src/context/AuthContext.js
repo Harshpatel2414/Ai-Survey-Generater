@@ -1,6 +1,7 @@
 'use client';
 
 import { createContext, useContext, useEffect, useState } from "react";
+import { useAppContext } from "./AppContext";
 
 const AuthContext = createContext();
 
@@ -9,48 +10,33 @@ export const useAuth = () => useContext(AuthContext);
 export const AuthContextProvider = ({ children }) => {
   const [currentUser, setCurrentUser] = useState(null);
   const [loading, setLoading] = useState(true);
+  const { setSurvey } = useAppContext();
 
   useEffect(() => {
-    const storedUser = localStorage.getItem("currentUser");
-    if (!storedUser) {
-      setLoading(false);
-      return;
-    }
-    setCurrentUser(JSON.parse(storedUser));
-    setLoading(false);
+    refreshUser();
   }, []);
 
-  useEffect(() => {
-    if (currentUser && !loading) { 
-      localStorage.setItem("currentUser", JSON.stringify(currentUser));
-    } else {
-      localStorage.removeItem("currentUser");
-    }
-  }, [currentUser, loading]);
 
   const refreshUser = async () => {
     try {
-      const response = await fetch(`/api/user`,{
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify({ userId: currentUser._id }),
-      });
+      const response = await fetch(`/api/me`);
       if (!response.ok) {
         throw new Error("Failed to fetch user data.");
       }
       const data = await response.json();
       setCurrentUser(data);
     } catch (error) {
-      console.error("Error refreshing user:", error);
-    } 
-  }
+      console.error("Error fetching user:", error);
+    } finally {
+      setLoading(false);
+    }
+  };
 
-  const handleLogout = () => {
+  const handleLogout = async () => {
     setLoading(true); 
     setCurrentUser(null);
-    localStorage.clear();
+    setSurvey("");
+    await fetch("/api/logout");
     setLoading(false); 
   };
 

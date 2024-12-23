@@ -6,14 +6,17 @@ export const GET = async (req, { params }) => {
   const client = new MongoClient(process.env.MONGO_URI);
 
   try {
-    const { id } = params; 
+    const { id } = await params;
     await client.connect();
     const db = client.db(process.env.DATABASE);
     const transactionCollection = db.collection('Transactions');
 
     // Find transactions for the given userId
-    const transactions = await transactionCollection.find({ userId: id }).toArray();
-    
+    const transactions = await transactionCollection
+      .find({ userId: id })
+      .sort({ transactionDate: -1 })
+      .toArray();
+
     return NextResponse.json({ transactions: transactions || [] }, { status: 200 });
   } catch (error) {
     console.error('Error fetching transactions:', error);

@@ -26,12 +26,12 @@ const Checkout = ({ amount, clientSecret }) => {
       setLoading(false);
       return;
     }
-
+    let date = new Date().toISOString();
     const { error } = await stripe.confirmPayment({
       elements,
       clientSecret: clientSecret,
       confirmParams: {
-        return_url: `${"https://ai-survey-generater.vercel.app"}/success?amount=${amount}&userId=${currentUser._id}&email=${currentUser.email}`,
+        return_url: `${"http://localhost:3000"}/success?amount=${amount}&userId=${currentUser._id}&email=${currentUser.email}&date=${date}`,
       },
       
     });

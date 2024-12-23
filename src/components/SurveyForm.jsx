@@ -1,6 +1,5 @@
-"use client";
-
-import { useState } from "react";
+"use client"
+import { useState, useEffect } from "react";
 import Button from "./common/Button";
 import { useAppContext } from "@/context/AppContext";
 import fetchSurveyPrompt from "@/helpers/fetchSurveyPrompt";
@@ -11,21 +10,49 @@ import { useRouter } from "next/navigation";
 import toast from "react-hot-toast";
 
 export default function SurveyForm() {
+  // Use state to force re-renders when the form values change
   const [surveyQuestions, setSurveyQuestions] = useState("");
   const [characteristics, setCharacteristics] = useState("");
   const [individuals, setIndividuals] = useState("");
+  
   const { loading, setLoading, fetchSurveyResponse } = useAppContext();
   const { currentUser, refreshUser } = useAuth();
   const [formError, setFormError] = useState("");
   const [showModal, setShowModal] = useState(false);
   const [amountNeeded, setAmountNeeded] = useState(0);
-  
+
   const router = useRouter();
+  useEffect(() => {
+    const savedSurveyQuestions = localStorage.getItem("surveyQuestions");
+    const savedCharacteristics = localStorage.getItem("characteristics");
+    const savedIndividuals = localStorage.getItem("individuals");
+
+    if (savedSurveyQuestions) setSurveyQuestions(savedSurveyQuestions);
+    if (savedCharacteristics) setCharacteristics(savedCharacteristics);
+    if (savedIndividuals) setIndividuals(savedIndividuals);
+  }, []);
+
+  // Handle form input changes and store values in refs and state
+  const handleChange = (e) => {
+    const { name, value } = e.target;
+
+    if (name === "surveyQuestions") {
+      setSurveyQuestions(value);
+      localStorage.setItem("surveyQuestions", value);
+    } else if (name === "characteristics") {
+      setCharacteristics(value);
+      localStorage.setItem("characteristics", value);
+    } else if (name === "individuals") {
+      setIndividuals(value);
+      localStorage.setItem("individuals", value);
+    }
+  };
+
   const handleGenerateSurvey = async (e) => {
     e.preventDefault();
     setFormError("");
     setLoading(true);
-    
+
     if (!surveyQuestions || !characteristics || !individuals) {
       setFormError("Please fill out all fields.");
       setLoading(false);
@@ -35,7 +62,7 @@ export default function SurveyForm() {
     if (!currentUser) {
       toast(
         (t) => (
-          <div >
+          <div>
             <p className="mb-2">Please log in or register to continue to Generate Survey</p>
             <div className="flex gap-2 items-center justify-center">
               <button
@@ -82,6 +109,7 @@ export default function SurveyForm() {
       setSurveyQuestions("");
       setCharacteristics("");
       setIndividuals("");
+      localStorage.clear();
 
       const response = await fetch("/api/wallet/deduct", {
         method: "POST",
@@ -94,7 +122,7 @@ export default function SurveyForm() {
         setFormError("Failed to deduct amount from wallet.");
         return;
       }
-      await refreshUser(); 
+      await refreshUser();
     } catch (error) {
       setFormError("Something went wrong. Please try again.");
       console.error(error);
@@ -113,13 +141,11 @@ export default function SurveyForm() {
       <h1 className="text-2xl font-bold mb-5 text-center">AI Survey Form</h1>
       <form className="space-y-4">
         <div>
-          <label className="block text-sm font-medium mb-1">
-            Survey Questions
-          </label>
+          <label className="block text-sm font-medium mb-1">Survey Questions</label>
           <textarea
             name="surveyQuestions"
             value={surveyQuestions}
-            onChange={(e) => setSurveyQuestions(e.target.value)}
+            onChange={handleChange}
             placeholder="Enter your survey questions, separated by new lines."
             className="w-full p-2 border rounded-md resize-none outline-none"
             rows="4"
@@ -127,28 +153,24 @@ export default function SurveyForm() {
         </div>
 
         <div>
-          <label className="block text-sm font-medium mb-1">
-            Survey Group Characteristics
-          </label>
+          <label className="block text-sm font-medium mb-1">Survey Group Characteristics</label>
           <input
             type="text"
-            name="groupCharacteristics"
+            name="characteristics"
             value={characteristics}
-            onChange={(e) => setCharacteristics(e.target.value)}
+            onChange={handleChange}
             placeholder="e.g. 'Teenagers interested in gaming'"
             className="w-full p-2 border rounded-md outline-none"
           />
         </div>
 
         <div>
-          <label className="block text-sm font-medium mb-1">
-            Number of Individuals
-          </label>
+          <label className="block text-sm font-medium mb-1">Number of Individuals</label>
           <input
             type="number"
-            name="numberOfIndividuals"
+            name="individuals"
             value={individuals}
-            onChange={(e) => setIndividuals(e.target.value)}
+            onChange={handleChange}
             placeholder="Enter the number of individuals (default: 10)"
             min="1"
             className="w-full p-2 border rounded-md outline-none"
@@ -159,7 +181,7 @@ export default function SurveyForm() {
         <Button
           onClick={(e) => handleGenerateSurvey(e)}
           disabled={loading}
-          text={`Generate Survey - $${calculateCost(individuals)}`}
+          text={`Generate Survey $${calculateCost(individuals)}`}
           className="w-full bg-[#4e8d99] hover:bg-[#589eac]"
         />
       </form>
@@ -169,8 +191,7 @@ export default function SurveyForm() {
           <div className="bg-white p-5 rounded-lg shadow-lg text-center w-96 flex flex-col gap-4 items-center">
             <Image src={"/wallet.png"} alt="wallet" width={200} height={200} />
             <p className="mb-4">
-              Insufficient funds. Please add <b>${amountNeeded}</b> to your
-              wallet.
+              Insufficient funds. Please add <b>${amountNeeded}</b> to your wallet.
             </p>
             <div className="flex justify-center gap-4">
               <button

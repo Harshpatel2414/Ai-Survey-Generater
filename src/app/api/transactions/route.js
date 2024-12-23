@@ -10,7 +10,10 @@ export const GET = async () => {
     const db = client.db(process.env.DATABASE);
     const transactionCollection = db.collection('Transactions');
 
-    const transactions = await transactionCollection.find().toArray();
+    const transactions = await transactionCollection
+      .find()
+      .sort({ transactionDate: -1 })
+      .toArray();
 
     return NextResponse.json({ transactions }, { status: 200 });
   } catch (error) {

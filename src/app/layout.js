@@ -15,13 +15,12 @@ export default function RootLayout({ children }) {
       <body
         className='h-dvh w-full bg-gray-100 relative'
       >
-        <AuthContextProvider>
-          <AppContextProvider>
-          
+        <AppContextProvider>
+          <AuthContextProvider>
             <Toaster position="top-center" />
             {children}
-          </AppContextProvider>
-        </AuthContextProvider>
+          </AuthContextProvider>
+        </AppContextProvider>
       </body>
     </html>
   );

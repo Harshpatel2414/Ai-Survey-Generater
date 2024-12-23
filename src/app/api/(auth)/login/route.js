@@ -2,6 +2,8 @@ export const maxDuration = 30;
 import { MongoClient } from 'mongodb';
 import bcrypt from 'bcrypt';
 import { NextResponse } from 'next/server';
+import { cookies } from 'next/headers';
+import jwt from 'jsonwebtoken';
 
 export const POST = async (req) => {
   const { email, password } = await req.json();
@@ -22,6 +24,13 @@ export const POST = async (req) => {
     if (!isPasswordValid) {
       return NextResponse.json({ message: 'Invalid password' }, { status: 400 });
     }
+    
+    const token = createToken(user._id);
+    await cookies().set("jwtAuth", token, {
+        httpOnly: true,
+        path: "/",
+        maxAge: 24 * 60 * 60
+    });
 
     delete user.password;
 
@@ -32,4 +41,13 @@ export const POST = async (req) => {
   } finally {
     await client.close();
   }
+};
+
+const maxAge = 24 * 60 * 60;
+const sec_key = process.env.NEXT_PUBLIC_JWT_SECRET;
+
+const createToken = (id) => {
+    return jwt.sign({ id }, sec_key, {
+        expiresIn: maxAge
+    });
 };
