@@ -34,16 +34,23 @@ export const POST = async (req) => {
         const result = await collection.insertOne(newUser);
         const token = createToken(result.insertedId);
 
-        cookies().set("jwtAuth", token, {
+        const response = NextResponse.json(
+            {
+                message: 'Registration successful',
+                user: { _id: result.insertedId, username, email, image, walletAmount: 0 },
+            },
+            { status: 201 }
+        );
+
+        response.cookies.set('jwtAuth', token, {
             httpOnly: true,
-            path: "/",
-            maxAge: 24 * 60 * 60
+            path: '/',
+            secure: true,
+            sameSite: 'strict',
+            maxAge: 24 * 60 * 60, // 1 day
         });
 
-        return NextResponse.json({
-            message: 'Registration successful',
-            user: { _id: result.insertedId, username, email,image, walletAmount: 0 },
-        }, { status: 201 });
+        return response;
     } catch (error) {
         console.error('Error registering user:', error);
         return NextResponse.json({ message: 'Internal Server Error' }, { status: 500 });
@@ -53,7 +60,7 @@ export const POST = async (req) => {
 };
 
 const maxAge = 24 * 60 * 60;
-const sec_key = process.env.NEXT_PUBLIC_JWT_SECRET;
+const sec_key = process.env.JWT_SECRET;
 
 const createToken = (id) => {
     return jwt.sign({ id }, sec_key, {

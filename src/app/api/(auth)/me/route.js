@@ -14,7 +14,7 @@ export const GET = async (req) => {
 
   try {
     // Verify the JWT token
-    const { id } = jwt.verify(token, process.env.NEXT_PUBLIC_JWT_SECRET);
+    const { id } = jwt.verify(token, process.env.JWT_SECRET);
 
     // Connect to the database and fetch user details
     const client = new MongoClient(process.env.MONGO_URI);
