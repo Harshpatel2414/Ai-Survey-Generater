@@ -16,7 +16,7 @@ const stripePromise = loadStripe(process.env.NEXT_PUBLIC_STRIPE_PUBLIC_KEY);
 const ITEMS_PER_PAGE = 10;
 
 const ProfilePage = () => {
-  const [amount, setAmount] = useState(0);
+  const [amount, setAmount] = useState(10);
   const [clientSecret, setClientSecret] = useState("");
   const [isAddingMoney, setIsAddingMoney] = useState(false);
   const [transactionLoading, setTransactionLoading] = useState(false);
@@ -145,6 +145,7 @@ const ProfilePage = () => {
                 className="p-2 outline-none border border-[#4e8d99] rounded-md w-full md:w-80 text-center"
                 min="10"
               />
+              <p className="text-gray-500">Minimum transaction amount is $10</p>
               <button
                 onClick={(e) => createPaymentIntent(e)}
                 className="bg-[#4e8d99] text-white py-2 px-4 rounded-md w-full md:w-80 mt-2"
