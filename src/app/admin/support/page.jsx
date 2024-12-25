@@ -22,6 +22,7 @@ function SupportPage() {
   const [filteredMessages, setFilteredMessages] = useState([]);
   const [loading, setLoading] = useState(false);
   const [reply, setReply] = useState("");
+  const [searchTerm, setSearchTerm] = useState("");  
 
   useEffect(() => {
     fetchMessages();
@@ -32,6 +33,7 @@ function SupportPage() {
     const response = await fetch("/api/support");
     const data = await response.json();
     setMessages(data);
+    setFilteredMessages(data);  
     setLoading(false);
   }
 
@@ -58,22 +60,25 @@ function SupportPage() {
     }
   };
 
-  const handleSearch = async (e) => {
-    e.preventDefault();
+  const handleSearch = (e) => {
     const searchValue = e.target.value;
-     const filtermessages = messages.filter((message) =>
-      message.email.toLowerCase().includes(searchValue.toLowerCase())
-    );
-    setFilteredMessages(filtermessages);
-  }
+    setSearchTerm(searchValue); 
+
+    if (searchValue === "") {
+      setFilteredMessages(messages);
+    } else {
+      const filtered = messages.filter((message) =>
+        message.email.toLowerCase().includes(searchValue.toLowerCase())
+      );
+      setFilteredMessages(filtered);
+    }
+  };
 
   return (
     <div className="bg-white w-full h-full">
       <div className="flex flex-col w-full md:flex-row md:items-center gap-4 justify-between p-4 border-b">
         <div className="flex items-center gap-4">
-          <h1 className="text-lg font-semibold text-[#4e8d99]">
-            Support Messages
-          </h1>
+          <h1 className="text-lg font-semibold text-[#4e8d99]">Support Messages</h1>
           <button className="flex items-center gap-2 px-3 py-1 rounded-md border text-[#4e8d99] hover:bg-gray-50">
             <FaSync className="w-4 h-4" />
             Refresh
@@ -83,13 +88,14 @@ function SupportPage() {
           <FaSearch className="w-6 h-6 text-gray-300" />
           <input
             type="text"
+            value={searchTerm}  
             onChange={handleSearch}
             placeholder="Search user by email"
             className="w-full md:w-80 outline-none bg-transparent"
           />
         </div>
       </div>
-      <div className="p-5 flex flex-col gap-4">
+      <div className="p-5 flex flex-col gap-4 min-h-[80dvh]">
         {loading ? (
           <Loading />
         ) : (
@@ -113,17 +119,17 @@ function SupportPage() {
                 <p className="text-gray-600 mt-4">
                   Message: <span>{message.message}</span>
                 </p>
-                <div className="flex flex-col md:flex-row gap-2 mt-4">
+                <div className="flex flex-col md:flex-row items-end gap-4 mt-4">
                   <textarea
                     value={reply}
-                    rows={1}
+                    rows={2}
                     onChange={(e) => setReply(e.target.value)}
                     placeholder="Enter your reply"
-                    className="w-full flex-1 p-2 border rounded-md  outline-none"
+                    className="w-full flex-1 p-2 border rounded-md  outline-none resize-none"
                   />
                   <button
                     onClick={() => handleSendReply(message.email)}
-                    className="text-white w-fit bg-[#4e8d99] flex items-center gap-3 px-3 py-2 rounded-md"
+                    className="text-white w-fit h-fit bg-[#4e8d99] flex items-center gap-3 px-4 py-2 rounded-md"
                   >
                     <span className="text-white">Send</span>
                     <FaPaperPlane className="w-5 h-5 text-white" />
