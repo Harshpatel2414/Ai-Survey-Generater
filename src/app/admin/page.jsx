@@ -120,11 +120,11 @@ const AdminPanel = () => {
                   {transactionsData?.transactions?.map((transaction, index) => (
                     <tr key={transaction._id} className="border-b">
                       <td className="px-4 py-2">{index + 1}</td>
-                      <td className="px-4 py-2 truncate w-full">
+                      <td className="px-4 py-2 truncate">
                         {transaction.paymentIntentId}
                       </td>
                       <td
-                        className={`px-4 py-2 truncate w-full ${
+                        className={`px-4 py-2 truncate ${
                           transaction.transactionType === "credit"
                             ? "text-green-500"
                             : "text-red-500"
@@ -132,7 +132,7 @@ const AdminPanel = () => {
                       >
                         ${transaction.amount}
                       </td>
-                      <td className="px-4 py-2 truncate w-full">
+                      <td className="px-4 py-2 truncate ">
                         {transaction.transactionDate}
                       </td>
                       <td
@@ -177,10 +177,10 @@ const AdminPanel = () => {
                   {usersData?.users?.map((user,index) => (
                     <tr key={user._id} className="border-b">
                       <td className="px-4 py-2">{index+1}</td>
-                      <td className="px-4 py-2 truncate w-full">{user._id}</td>
-                      <td className="px-4 py-2 capitalize truncate w-full">{user.username}</td>
-                      <td className="px-4 py-2 truncate w-full">{user.email}</td>
-                      <td className="px-4 py-2 w-full">${user.walletAmount}</td>
+                      <td className="px-4 py-2 truncate">{user._id}</td>
+                      <td className="px-4 py-2 capitalize truncate">{user.username}</td>
+                      <td className="px-4 py-2 truncate">{user.email}</td>
+                      <td className="px-4 py-2">${user.walletAmount}</td>
                       <td
                         className={`px-4 py-2 font-semibold ${
                           user.blocked ? "text-red-500" : "text-green-500"
