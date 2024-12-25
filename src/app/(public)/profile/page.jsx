@@ -21,12 +21,18 @@ const ProfilePage = () => {
   const [isAddingMoney, setIsAddingMoney] = useState(false);
   const [transactionLoading, setTransactionLoading] = useState(false);
   const [loading, setLoading] = useState(false);
+  const [error, setError] = useState(false);
   const [transactions, setTransactions] = useState([]);
   const [currentPage, setCurrentPage] = useState(1);
   const { currentUser } = useAuth();
   const router = useRouter();
   const searchParams = useSearchParams();
   const newUser = searchParams.get("newUser");
+  const amountNeeded = searchParams.get("amountNeeded");
+
+  useEffect(() => {
+    if(amountNeeded) setAmount(amountNeeded);
+  }, [currentUser]);
 
   useEffect(() => {
     if (!currentUser) return;
@@ -52,7 +58,10 @@ const ProfilePage = () => {
   // Create Payment Intent
   const createPaymentIntent = async (e) => {
     e.preventDefault();
-    if (amount < 10) {
+    setError(false);
+
+    if (Number(amount) < 10) {
+      setError(true);
       toast.error("Minimum transaction amount is $10.");
       return;
     }
@@ -142,10 +151,9 @@ const ProfilePage = () => {
                 value={amount}
                 onChange={(e) => setAmount(Number(e.target.value))}
                 placeholder="Enter amount"
-                className="p-2 outline-none border border-[#4e8d99] rounded-md w-full md:w-80 text-center"
-                min="10"
+                className={`p-2 outline-none border ${error ? "border-red-500" : "border-[#4e8d99]"}  rounded-md w-full md:w-80 text-center`}
               />
-              <p className="text-gray-500">Minimum transaction amount is $10</p>
+              <p className={error? "text-red-500":"text-gray-500"}>Minimum transaction amount is $10</p>
               <button
                 onClick={(e) => createPaymentIntent(e)}
                 className="bg-[#4e8d99] text-white py-2 px-4 rounded-md w-full md:w-80 mt-2"

@@ -34,7 +34,7 @@ export default function AdminLogin() {
         setResponse(res);
         setStep(2);
       } catch (err) {
-        setError(err.message);
+        setError("Something went wrong. Please try again.");
       } finally {
         setLoading(false);
       }

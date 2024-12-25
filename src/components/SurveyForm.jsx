@@ -232,7 +232,7 @@ export default function SurveyForm() {
             </p>
             <div className="flex w-full gap-4">
               <Link
-                href={`/profile`}
+                href={`/profile?amountNeeded=${amountNeeded}`}
                 onClick={() => setShowModal(false)}
                 className="py-2 w-full px-4 bg-[#4e8d99] text-white rounded-md hover:bg-[#589eac]"
               >
