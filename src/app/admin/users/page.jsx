@@ -39,9 +39,9 @@ const Modal = ({
           </button>
           <button
             onClick={onSubmit}
-            className="px-4 py-2 bg-red-500 text-white rounded-md hover:bg-red-600"
+            className={`"px-4 py-2 ${action === "block" ?"bg-red-500" : "bg-[#4e8d99]"  } text-white rounded-md"`}
           >
-            Block
+            {action === "block" ? "Block" : "Unblock"}
           </button>
         </div>
       </div>
@@ -200,7 +200,7 @@ const Users = () => {
                           onClick={() =>
                             openModal(user, user.blocked ? "unblock" : "block")
                           }
-                          className={`w-20 px-4 py-2 text-white rounded-lg font-medium shadow-sm transition-transform transform hover:scale-105 ${
+                          className={`w-20 px-3 py-1 text-white rounded-lg font-medium shadow-sm transition-transform transform  ${
                             user.blocked
                               ? "bg-[#4e8d99] hover:bg-[#60afbe]"
                               : "bg-red-500 hover:bg-red-400"

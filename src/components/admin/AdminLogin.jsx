@@ -27,12 +27,13 @@ export default function AdminLogin() {
           body: JSON.stringify({ email, password }),
         });
 
+        setResponse(res);
         if (!res.ok) {
           const { message } = await res.json();
           toast.error(message);
+        } else {
+          setStep(2);
         }
-        setResponse(res);
-        setStep(2);
       } catch (err) {
         setError("Something went wrong. Please try again.");
       } finally {
@@ -113,7 +114,12 @@ export default function AdminLogin() {
           )}
           {step === 2 && (
             <div className="mb-4 relative">
-              <button onClick={()=>setStep(1)} className="absolute -top-0 right-4 underline">Back</button>
+              <button
+                onClick={() => setStep(1)}
+                className="absolute -top-0 right-4 underline"
+              >
+                Back
+              </button>
               <label className="block text-gray-700 mb-2" htmlFor="otp">
                 Enter Admin Passkey
               </label>

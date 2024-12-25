@@ -9,12 +9,14 @@ import {
 import { FaMoneyBillTrendUp } from "react-icons/fa6";
 import Loading from "../loading";
 import StatCard from "@/components/admin/StatCard";
+import { useAdmin } from "@/context/AdminContext";
 
 const AdminPanel = () => {
   const [loading, setLoading] = useState(false);
   const [usersLoading, setUsersLoading] = useState(false);
   const [transactionsData, setTransactionsData] = useState(null);
   const [usersData, setUsersData] = useState(null);
+  const { currentAdmin } = useAdmin();
 
   const fetchTransactions = async () => {
     setLoading(true);
@@ -55,7 +57,7 @@ const AdminPanel = () => {
           <h1 className="text-2xl font-bold text-[#4e8d99] tracking-wider">
             Dashboard
           </h1>
-          <p>Welcome, Harsh!</p>
+          <p className="capitalize">Welcome, {currentAdmin.username}!</p>
         </div>
         <div className="border bg-white rounded-lg h-10 flex items-center gap-2 p-2 drop-shadow-sm">
           <FaSearch className="w-6 h-6 text-gray-300" />
@@ -104,7 +106,7 @@ const AdminPanel = () => {
             <Loading />
           ) : transactionsData?.transactions?.length > 0 ? (
             <div className="overflow-x-auto w-full">
-              <table className="w-full text-sm text-left text-gray-500">
+              <table className="min-w-full min-h-80 text-sm text-left text-gray-500">
                 <thead className="text-xs text-gray-700 uppercase bg-gray-100">
                   <tr>
                     <th className="px-4 py-2">Sr. No.</th>
@@ -118,11 +120,11 @@ const AdminPanel = () => {
                   {transactionsData?.transactions?.map((transaction, index) => (
                     <tr key={transaction._id} className="border-b">
                       <td className="px-4 py-2">{index + 1}</td>
-                      <td className="px-4 py-2">
+                      <td className="px-4 py-2 truncate w-full">
                         {transaction.paymentIntentId}
                       </td>
                       <td
-                        className={`px-4 py-2 ${
+                        className={`px-4 py-2 truncate w-full ${
                           transaction.transactionType === "credit"
                             ? "text-green-500"
                             : "text-red-500"
@@ -130,7 +132,7 @@ const AdminPanel = () => {
                       >
                         ${transaction.amount}
                       </td>
-                      <td className="px-4 py-2">
+                      <td className="px-4 py-2 truncate w-full">
                         {transaction.transactionDate}
                       </td>
                       <td
@@ -184,7 +186,7 @@ const AdminPanel = () => {
                           user.blocked ? "text-red-500" : "text-green-500"
                         }`}
                       >
-                        {user.blocked ? `Yes (${user.reason})` : "No"}
+                        {user.blocked ? `Yes` : "No"}
                       </td>
                     </tr>
                   ))}
