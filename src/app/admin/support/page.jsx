@@ -4,27 +4,36 @@ import { useState, useEffect } from "react";
 import toast from "react-hot-toast";
 import { FaPaperPlane, FaSearch, FaSync } from "react-icons/fa";
 
+const getTimeAgo = (dateString) => {
+  const now = new Date();
+  const createdAt = new Date(dateString);
+  const difference = Math.abs(now - createdAt);
+  const minutes = Math.floor(difference / (1000 * 60));
+  const hours = Math.floor(difference / (1000 * 60 * 60));
+  const days = Math.floor(difference / (1000 * 60 * 60 * 24));
+
+  if (minutes < 60) return `${minutes} min ago`;
+  if (hours < 24) return `${hours} hr ago`;
+  return `${days} day ago`;
+};
+
 function SupportPage() {
   const [messages, setMessages] = useState([]);
+  const [filteredMessages, setFilteredMessages] = useState([]);
   const [loading, setLoading] = useState(false);
   const [reply, setReply] = useState("");
 
   useEffect(() => {
-    // Fetch all support messages
-    async function fetchMessages() {
-      setLoading(true);
-      const response = await fetch("/api/support");
-      const data = await response.json();
-      setMessages(data);
-      setLoading(false);
-    }
-
     fetchMessages();
   }, []);
 
-  const handleReplyChange = (e) => {
-    setReply(e.target.value);
-  };
+  async function fetchMessages() {
+    setLoading(true);
+    const response = await fetch("/api/support");
+    const data = await response.json();
+    setMessages(data);
+    setLoading(false);
+  }
 
   const handleSendReply = async (selectedEmail) => {
     if (!reply) {
@@ -49,8 +58,17 @@ function SupportPage() {
     }
   };
 
+  const handleSearch = async (e) => {
+    e.preventDefault();
+    const searchValue = e.target.value;
+     const filtermessages = messages.filter((message) =>
+      message.email.toLowerCase().includes(searchValue.toLowerCase())
+    );
+    setFilteredMessages(filtermessages);
+  }
+
   return (
-    <div className="bg-white w-full">
+    <div className="bg-white w-full h-full">
       <div className="flex flex-col w-full md:flex-row md:items-center gap-4 justify-between p-4 border-b">
         <div className="flex items-center gap-4">
           <h1 className="text-lg font-semibold text-[#4e8d99]">
@@ -65,47 +83,50 @@ function SupportPage() {
           <FaSearch className="w-6 h-6 text-gray-300" />
           <input
             type="text"
+            onChange={handleSearch}
             placeholder="Search user by email"
             className="w-full md:w-80 outline-none bg-transparent"
           />
         </div>
       </div>
-      <div className="p-5">
+      <div className="p-5 flex flex-col gap-4">
         {loading ? (
           <Loading />
         ) : (
           <>
-            {messages.map((message) => (
+            {filteredMessages.map((message) => (
               <div
                 key={message.email}
-                className="p-5 border-b bg-[#edfaf3] rounded-md max-w-sm"
+                className="p-5 flex flex-col relative border-b bg-white hover:drop-shadow-lg drop-shadow-md rounded-md w-full"
               >
-                <p>
-                  Name :{" "}
-                  <span className="font-semibold text-[#4e8d99] capitalize">
-                    {message.name}
+                <div className=" flex-1">
+                  <div className="border-b pb-2">
+                    <p className="font-semibold text-lg text-[#4e8d99] capitalize">
+                      {message.name}
+                    </p>
+                    <p className="text-gray-600">{message.email}</p>
+                  </div>
+                  <span className="text-sm absolute top-4 right-4 text-gray-500">
+                    {getTimeAgo(message.createdAt)}
                   </span>
-                </p>
-                <p>
-                  Email : <span className="text-gray-600">{message.email}</span>
-                </p>
-                <p>
+                </div>
+                <p className="text-gray-600 mt-4">
                   Message: <span>{message.message}</span>
                 </p>
-                <div className="flex flex-col  items-end gap-2 mt-4">
+                <div className="flex flex-col md:flex-row gap-2 mt-4">
                   <textarea
                     value={reply}
-                    rows={3}
-                    onChange={handleReplyChange}
+                    rows={1}
+                    onChange={(e) => setReply(e.target.value)}
                     placeholder="Enter your reply"
-                    className="w-full flex-1 p-2 border rounded-md resize-none outline-none"
+                    className="w-full flex-1 p-2 border rounded-md  outline-none"
                   />
                   <button
-                    onClick={()=>handleSendReply(message.email)}
-                    className="text-white w-fit bg-[#4e8d99] flex items-center gap-2 px-3 py-2 rounded-md"
+                    onClick={() => handleSendReply(message.email)}
+                    className="text-white w-fit bg-[#4e8d99] flex items-center gap-3 px-3 py-2 rounded-md"
                   >
+                    <span className="text-white">Send</span>
                     <FaPaperPlane className="w-5 h-5 text-white" />
-                    <span className="text-white">send reply</span>
                   </button>
                 </div>
               </div>

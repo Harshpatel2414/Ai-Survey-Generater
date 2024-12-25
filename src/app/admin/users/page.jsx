@@ -19,16 +19,17 @@ const Modal = ({
   if (!isVisible) return null;
 
   return (
-    <div className="fixed inset-0 bg-black bg-opacity-10 flex items-center justify-center z-50">
+    <div className="p-5 inset-0 absolute top-0 bg-black bg-opacity-10 flex items-center justify-center z-50">
       <div className="bg-white p-6 rounded-lg w-full max-w-md shadow-lg">
         <h2 className="text-xl font-semibold text-gray-700 mb-4">
           <span className="capitalize">{action}</span> User - {user?.username}
         </h2>
         <textarea
           value={reason}
+          rows={3}
           onChange={(e) => setReason(e.target.value)}
-          placeholder="Enter reason for blocking"
-          className="w-full p-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 mb-4"
+          placeholder={`Enter reason to ${action} user...`}
+          className="w-full p-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 mb-4 resize-none"
         />
         <div className="flex justify-end space-x-2">
           <button
@@ -39,7 +40,7 @@ const Modal = ({
           </button>
           <button
             onClick={onSubmit}
-            className={`"px-4 py-2 ${action === "block" ?"bg-red-500" : "bg-[#4e8d99]"  } text-white rounded-md"`}
+            className={`px-4 py-2 ${action === "block" ?"bg-red-500" : "bg-[#4e8d99]"  } text-white rounded-md hover:opacity-80`}
           >
             {action === "block" ? "Block" : "Unblock"}
           </button>

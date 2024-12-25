@@ -1,6 +1,5 @@
 import { AppContextProvider } from "@/context/AppContext";
 import "./globals.css";
-import Header from "@/components/Header";
 import { AuthContextProvider } from "@/context/AuthContext";
 import { Toaster } from "react-hot-toast";
 import { AdminContextProvider } from "@/context/AdminContext";

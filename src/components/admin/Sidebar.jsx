@@ -184,13 +184,13 @@ const Sidebar = () => {
           </ul>
         </nav>
 
-        <div className="pt-2 border-t flex items-center gap-2 w-full">
+        <div className="pt-2 mt-4 border-t flex items-center gap-2 w-full">
             <Image
               src={currentAdmin ? currentAdmin?.image : "/user.png"}
               alt="User"
-              width={32}
-              height={32}
-              className="border-2 h-8 w-8 rounded-full object-center object-cover"
+              width={40}
+              height={40}
+              className="border-2 h-10 w-10 rounded-full object-center object-cover"
             />
             <p className="w-full flex-1 truncate capitalize">{currentAdmin?.username}</p>
             <FiLogOut onClick={handleLogout} size={20} className="hover:bg-gray-100 h-8 w-8 p-2 rounded-md cursor-pointer"/>

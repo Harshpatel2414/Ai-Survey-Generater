@@ -2,7 +2,6 @@
 import { useState, useEffect, useRef } from "react";
 import Button from "./common/Button";
 import { useAppContext } from "@/context/AppContext";
-import fetchSurveyPrompt from "@/helpers/fetchSurveyPrompt";
 import { useAuth } from "@/context/AuthContext";
 import Link from "next/link";
 import Image from "next/image";
@@ -18,10 +17,9 @@ export default function SurveyForm() {
   const {
     loading,
     setLoading,
-    fetchSurveyResponse,
     isProcessPayment,
     setIsProcessPayment,
-    formdata,
+    setSurvey,
     setFormData,
   } = useAppContext();
   const { currentUser, refreshUser } = useAuth();
@@ -69,6 +67,7 @@ export default function SurveyForm() {
   const handleGenerateSurvey = async (e) => {
     e.preventDefault();
     setFormError("");
+    setSurvey("");
     setLoading(true);
     setFormData({ surveyQuestions, characteristics, individuals });
     localStorage.setItem(
@@ -127,9 +126,31 @@ export default function SurveyForm() {
     }
 
     try {
-      await fetchSurveyResponse(
-        fetchSurveyPrompt(surveyQuestions, characteristics, individuals)
-      );
+      const apiResponse = await fetch("/api/survey", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({ surveyQuestions, characteristics, individuals }),
+      });
+      if (!apiResponse.ok) {
+        throw new Error("Failed to generate survey");
+      }
+
+      const reader = apiResponse.body.getReader();
+      const decoder = new TextDecoder();
+      let surveyContent = "";
+
+      while (true) {
+        const { done, value } = await reader.read();
+        if (done) break;
+
+        const chunk = decoder.decode(value, { stream: true });
+        surveyContent += chunk;
+
+        // Update the survey content dynamically
+        setSurvey((prev) => prev + chunk);
+      }
       setSurveyQuestions("");
       setCharacteristics("");
       setIndividuals("");
@@ -137,7 +158,7 @@ export default function SurveyForm() {
         surveyQuestions: "",
         characteristics: "",
         individuals: "",
-      })
+      });
       localStorage.removeItem("formData");
 
       const response = await fetch("/api/wallet/deduct", {

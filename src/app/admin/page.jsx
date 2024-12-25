@@ -98,9 +98,9 @@ const AdminPanel = () => {
         </div>
 
         {/* Transaction History */}
-        <div className="flex flex-1 flex-col gap-4 overflow-x-auto bg-white drop-shadow-lg p-5 rounded-lg w-full">
-          <h2 className="text-2xl font-semibold text-gray-700">
-            Transaction History
+        <div className="bg-white drop-shadow-lg p-5 rounded-lg">
+          <h2 className="text-2xl font-semibold mb-4 text-gray-700">
+            Latest Transactions
           </h2>
           {loading ? (
             <Loading />
@@ -156,7 +156,7 @@ const AdminPanel = () => {
         {/* Users Section */}
         <div className="bg-white drop-shadow-lg p-5 rounded-lg">
           <h2 className="text-2xl font-semibold mb-4 text-gray-700">
-            Active Users
+            Most Active Users
           </h2>
           {usersLoading ? (
             <Loading />
@@ -177,10 +177,10 @@ const AdminPanel = () => {
                   {usersData?.users?.map((user,index) => (
                     <tr key={user._id} className="border-b">
                       <td className="px-4 py-2">{index+1}</td>
-                      <td className="px-4 py-2">{user._id}</td>
-                      <td className="px-4 py-2">{user.username}</td>
-                      <td className="px-4 py-2">{user.email}</td>
-                      <td className="px-4 py-2">${user.walletAmount}</td>
+                      <td className="px-4 py-2 truncate w-full">{user._id}</td>
+                      <td className="px-4 py-2 capitalize truncate w-full">{user.username}</td>
+                      <td className="px-4 py-2 truncate w-full">{user.email}</td>
+                      <td className="px-4 py-2 w-full">${user.walletAmount}</td>
                       <td
                         className={`px-4 py-2 font-semibold ${
                           user.blocked ? "text-red-500" : "text-green-500"

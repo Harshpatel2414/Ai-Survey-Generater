@@ -29,6 +29,12 @@ const Success = () => {
       return;
     }
 
+    const paymentProcessed = localStorage.getItem("paymentProcessed");
+    if (paymentProcessed === "true") {
+      router.push("/profile");
+      return;
+    }
+
     // Prepare transaction data to be sent to the backend
     const transactionData = {
       paymentIntentId,
@@ -51,23 +57,26 @@ const Success = () => {
         });
 
         if (response.ok) {
-         await refreshUser();
+          await refreshUser();
           toast.success("Transaction completed and wallet updated!");
+
+          // Mark payment as processed (store in localStorage)
+          localStorage.setItem("paymentProcessed", "true");
         } else {
-            toast.error("Error completing payment.");
+          toast.error("Error completing payment.");
         }
-    } catch (error) {
+      } catch (error) {
         toast.error("Failed to complete payment.");
         console.error("Error:", error);
-    } finally {
+      } finally {
         setLoading(false);
-        setIsProcessPayment(true)
-        router.push("/"); 
+        setIsProcessPayment(true);
+        router.push("/"); // Redirect to home after processing
       }
     };
 
     completePayment(); // Call the function to complete payment
-  }, [paymentIntentId, redirectStatus, router, amount, userId, email]);
+  }, [amount, date, userId, email, paymentIntentId, redirectStatus, router, refreshUser, setIsProcessPayment]);
 
   return (
     <div className="flex flex-col items-center justify-center h-screen bg-white">

@@ -4,6 +4,7 @@ import { useAdmin } from "@/context/AdminContext";
 import { FaLock, FaSpinner, FaUser } from "react-icons/fa";
 import Link from "next/link";
 import toast from "react-hot-toast";
+import { SiLimesurvey } from "react-icons/si";
 
 export default function AdminLogin() {
   const { setCurrentAdmin } = useAdmin();
@@ -60,7 +61,13 @@ export default function AdminLogin() {
   };
 
   return (
-    <div className="flex items-center justify-center h-screen bg-gray-100">
+    <div className="flex items-center flex-col gap-5 justify-center h-screen bg-gray-100 p-5">
+      <div className="flex items-center justify-center">
+        <SiLimesurvey className="text-5xl text-[#4e8d99] text-center" />
+        <h1 className="text-2xl font-bold text-[#4e8d99] text-center">
+          AI-Survey Admin
+        </h1>
+      </div>
       <div className="max-w-md w-full p-6 bg-white rounded-lg shadow-md">
         <h2 className="text-xl font-bold mb-4 text-center">
           {step === 1 ? "Admin Login" : "Enter OTP"}

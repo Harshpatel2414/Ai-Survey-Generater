@@ -32,7 +32,7 @@ const ProfilePage = () => {
 
   useEffect(() => {
     if(amountNeeded) setAmount(amountNeeded);
-  }, [currentUser]);
+  }, [currentUser,amountNeeded]);
 
   useEffect(() => {
     if (!currentUser) return;

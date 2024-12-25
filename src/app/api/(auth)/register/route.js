@@ -28,10 +28,11 @@ export const POST = async (req) => {
             password: hashedPassword,
             termsAndConditionsAccepted: termsAccepted,
             walletAmount: 0,
-            profilesGenerated: 0,
+            createdAt: new Date().toISOString(),
         };
 
         const result = await collection.insertOne(newUser);
+
         const token = createToken(result.insertedId);
 
         const response = NextResponse.json(

@@ -3,9 +3,13 @@ import React from "react";
 import Sidebar from "@/components/admin/Sidebar";
 import { useAdmin } from "@/context/AdminContext";
 import AdminLogin from "@/components/admin/AdminLogin";
+import Loading from "../loading";
 
 const AdminLayout = ({ children }) => {
-  const { currentAdmin } = useAdmin();
+  const { currentAdmin,loading } = useAdmin();
+
+  if(loading) return <Loading />
+  
   return !currentAdmin ? (
     <AdminLogin />
   ) : (
