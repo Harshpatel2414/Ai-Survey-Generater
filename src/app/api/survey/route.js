@@ -2,7 +2,6 @@ export const maxDuration = 60;
 import getModelResponse from '@/utils/getModelResponse';
 import fetchSurveyPrompt from '@/helpers/fetchSurveyPrompt';
 import { NextRequest, NextResponse } from 'next/server';
-import { maxDuration } from '../contact/route';
 
 export const POST = async (req) => {
     const { surveyQuestions, characteristics, individuals } = await req.json();
