@@ -2,65 +2,27 @@
 import React, { useState, useEffect } from "react";
 import {
   FaDollarSign,
-  FaHourglassHalf,
+  FaSearch,
   FaUser,
   FaWallet,
 } from "react-icons/fa";
-import { SiLimesurvey } from "react-icons/si";
+import { FaMoneyBillTrendUp } from "react-icons/fa6";
 import Loading from "../loading";
+import StatCard from "@/components/admin/StatCard";
 
 const AdminPanel = () => {
-  const [activeTab, setActiveTab] = useState("transactions");
   const [loading, setLoading] = useState(false);
   const [usersLoading, setUsersLoading] = useState(false);
-  const [transactionPage, setTransactionPage] = useState(1);
-  const [userPage, setUserPage] = useState(1);
-  const [transactions, setTransactions] = useState([]);
-  const [users, setUsers] = useState([]);
-
-  const itemsPerPage = 10;
-
-  const stats = [
-    {
-      title: "Total Users",
-      value: 1500,
-      icon: <FaUser size={24} />,
-      bg: "bg-blue-100",
-      color: "text-blue-600",
-    },
-    {
-      title: "Transactions",
-      value: 3200,
-      icon: <FaWallet size={24} />,
-      bg: "bg-green-100",
-      color: "text-green-600",
-    },
-    {
-      title: "Revenue",
-      value: "$45,000",
-      icon: <FaDollarSign size={24} />,
-      bg: "bg-yellow-100",
-      color: "text-yellow-600",
-    },
-    {
-      title: "Pending Requests",
-      value: 75,
-      icon: <FaHourglassHalf size={24} />,
-      bg: "bg-red-100",
-      color: "text-red-600",
-    },
-  ];
-
-  const paginate = (data, page) =>
-    data.slice((page - 1) * itemsPerPage, page * itemsPerPage);
+  const [transactionsData, setTransactionsData] = useState(null);
+  const [usersData, setUsersData] = useState(null);
 
   const fetchTransactions = async () => {
     setLoading(true);
     try {
-      const response = await fetch(`/api/transactions`);
+      const response = await fetch(`/api/transactions/stats`);
       if (!response.ok) throw new Error("Failed to fetch transactions");
-      const { transactions } = await response.json();
-      setTransactions(transactions);
+      const data = await response.json();
+      setTransactionsData(data);
     } catch (error) {
       console.error("Error fetching transactions:", error);
     } finally {
@@ -70,10 +32,10 @@ const AdminPanel = () => {
   const fetchUsers = async () => {
     setUsersLoading(true);
     try {
-      const response = await fetch(`/api/user`);
+      const response = await fetch(`/api/users/stats`);
       if (!response.ok) throw new Error("Failed to fetch users");
       const data = await response.json();
-      setUsers(data);
+      setUsersData(data);
     } catch (error) {
       console.error("Error fetching users:", error);
     } finally {
@@ -87,130 +49,147 @@ const AdminPanel = () => {
   }, []);
 
   return (
-    <div className="flex flex-col h-full w-full overflow-y-scroll hide-scrollbar">
-    <div className="flex items-center gap-2 bg-white p-5 drop-shadow-md">
-      <SiLimesurvey size={30} className="text-[#4e8d99]" />
-      <h1 className="text-lg font-bold text-primary">AI-Survey</h1>
-    </div>
-    <div className="flex flex-col gap-4 p-5">
-      {/* Stats Cards */}
-      <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
-        {stats.map((stat, index) => (
-          <div
-            key={index}
-            className={`flex items-center p-4 rounded-lg drop-shadow-lg ${stat.bg}`}
-          >
-            <div
-              className={`flex items-center justify-center w-12 h-12 rounded-full ${stat.color} bg-white shadow-inner mr-4`}
-            >
-              <span className="text-2xl">{stat.icon}</span>
-            </div>
-            <div>
-              <h3 className="text-lg font-semibold">{stat.title}</h3>
-              <p className="text-xl font-bold">{stat.value}</p>
-            </div>
-          </div>
-        ))}
+    <div className="flex flex-col h-full w-full overflow-y-scroll hide-scrollbar bg-white pb-10">
+      <div className="flex flex-col md:flex-row gap-4 md:items-center p-5">
+        <div className="flex flex-1 flex-col gap-2 drop-shadow-md">
+          <h1 className="text-2xl font-bold text-[#4e8d99] tracking-wider">
+            Dashboard
+          </h1>
+          <p>Welcome, Harsh!</p>
+        </div>
+        <div className="border bg-white rounded-lg h-10 flex items-center gap-2 p-2 drop-shadow-sm">
+          <FaSearch className="w-6 h-6 text-gray-300" />
+          <input
+            type="text"
+            placeholder="Search"
+            className="w-full md:max-w-sm outline-none bg-transparent"
+          />
+        </div>
       </div>
+      <div className="flex flex-col gap-4 p-5">
+        {/* Stats Cards */}
+        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
+          <StatCard
+            key={1}
+            icon={<FaUser size={24} />}
+            title={"Total Users"}
+            value={usersData?.totalUsers || 0}
+          />
+          <StatCard
+            key={2}
+            icon={<FaWallet size={24} />}
+            title={"Total Transactions"}
+            value={transactionsData?.totalTransactions || 0}
+          />
+          <StatCard
+            key={3}
+            icon={<FaDollarSign size={24} />}
+            title={"Revenue"}
+            value={transactionsData?.totalRevenue || 0}
+          />
+          <StatCard
+            key={5}
+            icon={<FaMoneyBillTrendUp size={24} />}
+            title={"Average Spend"}
+            value={transactionsData?.averageTransaction || 0}
+          />
+        </div>
 
-      {/* Transaction History */}
-      <div className="flex flex-1 flex-col gap-4 overflow-x-auto bg-white drop-shadow-lg p-5 rounded-lg w-full">
-        <h2 className="text-2xl font-semibold text-gray-700">Transaction History</h2>
-        {loading ? (
-          <Loading />
-        ) : transactions.length > 0 ? (
-          <div className="overflow-x-auto w-full">
-            <table className="w-full text-sm text-left text-gray-500">
-              <thead className="text-xs text-gray-700 uppercase bg-gray-100">
-                <tr>
-                  <th className="px-4 py-2">Sr. No.</th>
-                  <th className="px-4 py-2">Info</th>
-                  <th className="px-4 py-2">Amount</th>
-                  <th className="px-4 py-2">Date</th>
-                  <th className="px-4 py-2">Type</th>
-                </tr>
-              </thead>
-              <tbody>
-                {transactions.map((transaction, index) => (
-                  <tr key={transaction._id} className="border-b">
-                    <td className="px-4 py-2">{index + 1}</td>
-                    <td className="px-4 py-2">{transaction.paymentIntentId}</td>
-                    <td
-                      className={`px-4 py-2 ${
-                        transaction.transactionType === "credit"
-                          ? "text-green-500"
-                          : "text-red-500"
-                      }`}
-                    >
-                      ${transaction.amount}
-                    </td>
-                    <td className="px-4 py-2">{transaction.transactionDate}</td>
-                    <td
-                      className={`px-4 py-2 font-semibold ${
-                        transaction.transactionType === "credit"
-                          ? "text-green-500"
-                          : "text-red-500"
-                      }`}
-                    >
-                      {transaction.transactionType}
-                    </td>
+        {/* Transaction History */}
+        <div className="flex flex-1 flex-col gap-4 overflow-x-auto bg-white drop-shadow-lg p-5 rounded-lg w-full">
+          <h2 className="text-2xl font-semibold text-gray-700">
+            Transaction History
+          </h2>
+          {loading ? (
+            <Loading />
+          ) : transactionsData?.transactions?.length > 0 ? (
+            <div className="overflow-x-auto w-full">
+              <table className="w-full text-sm text-left text-gray-500">
+                <thead className="text-xs text-gray-700 uppercase bg-gray-100">
+                  <tr>
+                    <th className="px-4 py-2">Sr. No.</th>
+                    <th className="px-4 py-2">Info</th>
+                    <th className="px-4 py-2">Amount</th>
+                    <th className="px-4 py-2">Date</th>
+                    <th className="px-4 py-2">Type</th>
                   </tr>
-                ))}
-              </tbody>
-            </table>
-          </div>
-        ) : (
-          <p className="text-gray-500">No transactions found.</p>
-        )}
-      </div>
+                </thead>
+                <tbody>
+                  {transactionsData?.transactions?.map((transaction, index) => (
+                    <tr key={transaction._id} className="border-b">
+                      <td className="px-4 py-2">{index + 1}</td>
+                      <td className="px-4 py-2">
+                        {transaction.paymentIntentId}
+                      </td>
+                      <td
+                        className={`px-4 py-2 ${
+                          transaction.transactionType === "credit"
+                            ? "text-green-500"
+                            : "text-red-500"
+                        }`}
+                      >
+                        ${transaction.amount}
+                      </td>
+                      <td className="px-4 py-2">
+                        {transaction.transactionDate}
+                      </td>
+                      <td
+                        className={`px-4 py-2 font-semibold ${
+                          transaction.transactionType === "credit"
+                            ? "text-green-500"
+                            : "text-red-500"
+                        }`}
+                      >
+                        {transaction.transactionType}
+                      </td>
+                    </tr>
+                  ))}
+                </tbody>
+              </table>
+            </div>
+          ) : (
+            <p className="text-gray-500">No transactions found.</p>
+          )}
+        </div>
         {/* Users Section */}
         <div className="bg-white drop-shadow-lg p-5 rounded-lg">
           <h2 className="text-2xl font-semibold mb-4 text-gray-700">
             Active Users
           </h2>
           {usersLoading ? (
-            <Loading  />
-          ) : users.length > 0 ? (
-            <div className="w-full">
-              <div className="overflow-x-auto w-full">
-                <table className="min-w-full text-sm text-left text-gray-500">
-                  <thead className="text-xs text-gray-700 uppercase bg-gray-100">
-                    <tr>
-                      <th className="px-4 py-2">ID</th>
-                      <th className="px-4 py-2">Name</th>
-                      <th className="px-4 py-2">Email</th>
-                      <th className="px-4 py-2">Balance</th>
+            <Loading />
+          ) : usersData?.users.length > 0 ? (
+            <div className="overflow-x-auto w-full">
+              <table className="min-w-full text-sm text-left text-gray-500">
+                <thead className="text-xs text-gray-700 uppercase bg-gray-100">
+                  <tr>
+                    <th className="px-4 py-2">Sr.No</th>
+                    <th className="px-4 py-2">ID</th>
+                    <th className="px-4 py-2">Name</th>
+                    <th className="px-4 py-2">Email</th>
+                    <th className="px-4 py-2">Balance</th>
+                    <th className="px-4 py-2">Blocked</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  {usersData?.users?.map((user,index) => (
+                    <tr key={user._id} className="border-b">
+                      <td className="px-4 py-2">{index+1}</td>
+                      <td className="px-4 py-2">{user._id}</td>
+                      <td className="px-4 py-2">{user.username}</td>
+                      <td className="px-4 py-2">{user.email}</td>
+                      <td className="px-4 py-2">${user.walletAmount}</td>
+                      <td
+                        className={`px-4 py-2 font-semibold ${
+                          user.blocked ? "text-red-500" : "text-green-500"
+                        }`}
+                      >
+                        {user.blocked ? `Yes (${user.reason})` : "No"}
+                      </td>
                     </tr>
-                  </thead>
-                  <tbody>
-                    {paginate(users, userPage).map((user) => (
-                      <tr key={user._id} className="border-b">
-                        <td className="px-4 py-2">{user._id}</td>
-                        <td className="px-4 py-2">{user.username}</td>
-                        <td className="px-4 py-2">{user.email}</td>
-                        <td className="px-4 py-2">{user.walletAmount}</td>
-                      </tr>
-                    ))}
-                  </tbody>
-                </table>
-              </div>
-              <div className="flex justify-center mt-4">
-                {Array.from({
-                  length: Math.ceil(users.length / itemsPerPage),
-                }).map((_, i) => (
-                  <button
-                    key={i}
-                    onClick={() => setUserPage(i + 1)}
-                    className={`px-3 py-1 mx-1 rounded ${
-                      userPage === i + 1
-                        ? "bg-blue-500 text-white"
-                        : "bg-gray-200"
-                    }`}
-                  >
-                    {i + 1}
-                  </button>
-                ))}
-              </div>
+                  ))}
+                </tbody>
+              </table>
             </div>
           ) : (
             <p className="text-gray-500">No users found.</p>

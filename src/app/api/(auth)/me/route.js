@@ -24,7 +24,7 @@ export const GET = async (req) => {
 
     const user = await collection.findOne({ _id: new ObjectId(id) });
     if (!user) {
-      return NextResponse.json({ message: 'User not found' }, { status: 404 });
+      return NextResponse.json(null);
     }
 
     // Remove the password from the response
@@ -32,6 +32,6 @@ export const GET = async (req) => {
 
     return NextResponse.json(user, { status: 200 });
   } catch (error) {
-    return NextResponse.json({ message: 'Internal Server Error' }, { status: 500 });
+    return NextResponse.json(null, { status: 500 });
   }
 };

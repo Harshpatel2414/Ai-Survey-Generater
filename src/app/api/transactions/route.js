@@ -15,7 +15,7 @@ export const GET = async () => {
       .sort({ transactionDate: -1 })
       .toArray();
 
-    return NextResponse.json({ transactions }, { status: 200 });
+    return NextResponse.json(transactions , { status: 200 });
   } catch (error) {
     console.error('Error fetching transactions:', error);
     return NextResponse.json({ message: 'Internal Server Error' }, { status: 500 });

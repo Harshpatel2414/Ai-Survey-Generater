@@ -3,6 +3,7 @@ import "./globals.css";
 import Header from "@/components/Header";
 import { AuthContextProvider } from "@/context/AuthContext";
 import { Toaster } from "react-hot-toast";
+import { AdminContextProvider } from "@/context/AdminContext";
 
 export const metadata = {
   title: "Ai-Survey",
@@ -13,12 +14,14 @@ export default function RootLayout({ children }) {
   return (
     <html lang="en">
       <body
-        className='h-dvh w-full bg-gray-100 relative'
+        className='h-dvh w-full relative bg-white'
       >
         <AppContextProvider>
           <AuthContextProvider>
-            <Toaster position="top-center" />
-            {children}
+            <AdminContextProvider>
+              <Toaster position="top-center" />
+              {children}
+            </AdminContextProvider>
           </AuthContextProvider>
         </AppContextProvider>
       </body>
