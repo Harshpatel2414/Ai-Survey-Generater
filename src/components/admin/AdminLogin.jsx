@@ -27,7 +27,7 @@ export default function AdminLogin() {
       if (!res.ok) {
         toast.error(res.message);
       }
-      if (user.role !== "admin") {
+      if (user?.role !== "admin") {
         setError("Not an admin account! please login with an admin details");
         return;
       }

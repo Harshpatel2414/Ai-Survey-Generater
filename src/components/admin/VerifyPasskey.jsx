@@ -6,7 +6,7 @@ const VerifyPasskey = () => {
   const [passkey, setPasskey] = useState("");
   const [error, setError] = useState("");
   const [loading, setLoading] = useState(false);
-  const { setPasskeyVerified } = useAuth();
+  const { setPasskeyVerified, setCurrentUser } = useAuth();
 
   const handleVerify = () => {
     setError("");
@@ -17,9 +17,14 @@ const VerifyPasskey = () => {
     }
   };
 
+  const handleBack = () => {
+    setPasskeyVerified(false);
+    setCurrentUser(null);
+  }
+
   return (
     <div className="flex items-center justify-center h-full bg-gray-100 p-5">
-      <div className="max-w-md w-full p-6 bg-white rounded-lg shadow-md">
+      <div className="max-w-md w-full p-6 bg-white rounded-lg shadow-md relative">
         <div className="flex flex-col gap- mb-4 w-full">
           <label className="text-gray-700 mb-4 text-center">
             Enter Admin Passkey
@@ -47,6 +52,7 @@ const VerifyPasskey = () => {
             "Verify Passkey"
           )}
         </button>
+          <button onClick={handleBack} className="mt-5 p-1 w-full underline rounded-md text-gray-600 cursor-pointer">Back to login</button>
       </div>
     </div>
   );

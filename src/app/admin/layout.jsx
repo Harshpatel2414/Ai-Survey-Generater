@@ -10,7 +10,7 @@ const AdminLayout = ({ children }) => {
   if (!currentUser || currentUser?.role !== "admin") {
     return <AdminLogin />;
   }
-  if ( !isPasskeyVerified) {
+  if (!isPasskeyVerified) {
     return <VerifyPasskey />;
   }
   return (
