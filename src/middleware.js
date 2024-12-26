@@ -1,6 +1,14 @@
 import { NextResponse } from 'next/server';
 import { jwtVerify } from 'jose';
 
+const PUBLIC_ROUTES = [
+  '/api/login', 
+  '/api/me',
+  '/api/register',
+  '/api/forgot-password',
+  '/api/send-otp',
+  '/api/contact',
+];
 
 async function verifyToken(token) {
   if (!token) {
@@ -39,7 +47,10 @@ export async function middleware(req) {
       return NextResponse.redirect(new URL("/admin", req.url));
     }
   }
-
+  
+  if (PUBLIC_ROUTES.includes(pathname)) {
+    return NextResponse.next();
+  }
   // Protect all other API routes
   if (pathname.startsWith("/api/")) {
     if (!token) {
