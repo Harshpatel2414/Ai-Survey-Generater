@@ -24,9 +24,6 @@ export default function AdminLogin() {
         body: JSON.stringify({ email, password }),
       });
       const { user } = await res.json();
-      if (!res.ok) {
-        toast.error(res.message);
-      }
       if (user?.role !== "admin") {
         setError("Not an admin account! please login with an admin details");
         return;
