@@ -67,7 +67,7 @@ const Users = () => {
   const fetchUsers = async () => {
     setLoading(true);
     try {
-      const response = await fetch("/api/users");
+      const response = await fetch("/api/admin/users");
       const data = await response.json();
       setUsers(data);
       setLoading(false);
@@ -103,7 +103,7 @@ const Users = () => {
     }
 
     try {
-      const response = await fetch("/api/users", {
+      const response = await fetch("/api/admin/users", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({

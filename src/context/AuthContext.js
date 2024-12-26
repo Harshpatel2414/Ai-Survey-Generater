@@ -9,6 +9,7 @@ export const useAuth = () => useContext(AuthContext);
 
 export const AuthContextProvider = ({ children }) => {
   const [currentUser, setCurrentUser] = useState(null);
+  const [isPasskeyVerified, setPasskeyVerified] = useState(false);
   const [loading, setLoading] = useState(true);
   const { setSurvey } = useAppContext();
 
@@ -33,12 +34,11 @@ export const AuthContextProvider = ({ children }) => {
   };
 
   const handleLogout = async () => {
-    setLoading(true); 
     setCurrentUser(null);
+    setPasskeyVerified(false);
     setSurvey("");
     localStorage.clear();
     await fetch("/api/logout");
-    setLoading(false); 
   };
 
   return (
@@ -48,10 +48,12 @@ export const AuthContextProvider = ({ children }) => {
         setCurrentUser,
         handleLogout,
         loading,
-        refreshUser
+        refreshUser,
+        isPasskeyVerified, 
+        setPasskeyVerified
       }}
     >
-      {children}
+      {!loading && children}
     </AuthContext.Provider>
   );
 };

@@ -1,8 +1,7 @@
-import { AppContextProvider } from "@/context/AppContext";
 import "./globals.css";
+import { AppContextProvider } from "@/context/AppContext";
 import { AuthContextProvider } from "@/context/AuthContext";
 import { Toaster } from "react-hot-toast";
-import { AdminContextProvider } from "@/context/AdminContext";
 
 export const metadata = {
   title: "Ai-Survey",
@@ -17,10 +16,8 @@ export default function RootLayout({ children }) {
       >
         <AppContextProvider>
           <AuthContextProvider>
-            <AdminContextProvider>
-              <Toaster position="top-center" />
-              {children}
-            </AdminContextProvider>
+            <Toaster position="top-center" />
+            {children}
           </AuthContextProvider>
         </AppContextProvider>
       </body>

@@ -30,7 +30,7 @@ function SupportPage() {
 
   async function fetchMessages() {
     setLoading(true);
-    const response = await fetch("/api/support");
+    const response = await fetch("/api/admin/support");
     const data = await response.json();
     setMessages(data);
     setFilteredMessages(data);  
@@ -43,7 +43,7 @@ function SupportPage() {
       return;
     }
 
-    const response = await fetch("/api/support", {
+    const response = await fetch("/api/admin/support", {
       method: "POST",
       headers: {
         "Content-Type": "application/json",

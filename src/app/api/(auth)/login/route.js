@@ -24,8 +24,8 @@ export const POST = async (req) => {
     if (!isPasswordValid) {
       return NextResponse.json({ message: 'Invalid password' }, { status: 400 });
     }
-    
-    const token = createToken(user._id);
+
+    const token = createToken(user._id, user.role);
     const response = NextResponse.json(
       { message: 'Login successful', user },
       { status: 200 }
@@ -33,10 +33,10 @@ export const POST = async (req) => {
 
     response.cookies.set('jwtAuth', token, {
       httpOnly: true,
-      secure: true, 
+      secure: true,
       sameSite: 'strict',
       path: '/',
-      maxAge: 24 * 60 * 60, // 1 day
+      maxAge: 24 * 60 * 60, 
     });
 
     return response;
@@ -51,8 +51,8 @@ export const POST = async (req) => {
 const maxAge = 24 * 60 * 60;
 const sec_key = process.env.JWT_SECRET;
 
-const createToken = (id) => {
-    return jwt.sign({ id }, sec_key, {
-        expiresIn: maxAge
-    });
+const createToken = (id, role) => {
+  return jwt.sign({ id, role }, sec_key, {
+    expiresIn: maxAge
+  });
 };

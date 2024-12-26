@@ -20,7 +20,7 @@ const Transactions = () => {
   const fetchTransactions = async () => {
     setLoading(true);
     try {
-      const response = await fetch("/api/transactions");
+      const response = await fetch("/api/admin/transactions");
       const data = await response.json();
       console.log("data >>>", data)
       setTransactions(data);

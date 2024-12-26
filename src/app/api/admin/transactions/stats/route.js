@@ -20,7 +20,7 @@ export async function GET(req) {
 
         const topTransactions = await transactionsCollection
             .find()
-            .sort({ amount: -1 })
+            .sort({ transactionDate: -1 })
             .limit(10)
             .toArray();
 

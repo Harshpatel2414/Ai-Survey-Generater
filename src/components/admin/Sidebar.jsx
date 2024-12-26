@@ -1,80 +1,3 @@
-// "use client";
-// import React, { useState } from "react";
-// import {
-//   FaBars,
-//   FaHome,
-//   FaUsers,
-//   FaChevronLeft,
-//   FaChevronRight,
-//   FaExchangeAlt,
-// } from "react-icons/fa"; // Importing React Icons
-// import Link from "next/link"; // Importing Link from Next.js
-
-// const Sidebar = () => {
-//   const [isCollapsed, setIsCollapsed] = useState(true); // State to handle collapse
-
-//   const toggleSidebar = () => {
-//     setIsCollapsed(!isCollapsed);
-//   };
-
-//   return (
-//     <div
-//       className={`flex flex-col bg-[#4e8d99] text-white ${
-//         isCollapsed ? "w-16" : "w-64"
-//       } transition-all duration-300 drop-shadow-lg`}
-//     >
-//       <div className="flex justify-between items-center p-4 border-b-2 border-gray-400 py-5">
-//         <h2
-//           className={`text-xl font-semibold ${
-//             isCollapsed ? "hidden" : "block"
-//           }`}
-//         >
-//           Admin Panel
-//         </h2>
-//         <button onClick={toggleSidebar} className="text-white">
-//         {isCollapsed ? (
-//             <FaChevronRight size={24} />
-//           ) : (
-//             <FaChevronLeft size={24} />
-//           )}
-//         </button>
-//       </div>
-//       <div className="space-y-4 p-2 w-full">
-//         <div>
-//           <Link
-//             href="/admin"
-//             className="flex items-center gap-4 rounded hover:bg-[#60afbe] p-2"
-//           >
-//             <FaHome size={24} />
-//             {!isCollapsed && <span>Home</span>}
-//           </Link>
-//         </div>
-
-//         <div>
-//           <Link
-//             href="/admin/transactions"
-//             className="flex items-center gap-4 rounded hover:bg-[#60afbe] p-2"
-//           >
-//             <FaExchangeAlt size={24} />
-//             {!isCollapsed && <span>Transactions</span>}
-//           </Link>
-//         </div>
-//         <div>
-//           <Link
-//             href="/admin/users"
-//             className="flex items-center gap-4 rounded hover:bg-[#60afbe] p-2"
-//           >
-//             <FaUsers size={24} />
-//             {!isCollapsed && <span>Users</span>}
-//           </Link>
-//         </div>
-//       </div>
-//     </div>
-//   );
-// };
-
-// export default Sidebar;
-
 "use client";
 import { useState } from "react";
 import { usePathname } from "next/navigation";
@@ -92,17 +15,19 @@ import { GrTransaction } from "react-icons/gr";
 import { LuUsers } from "react-icons/lu";
 import { RiCloseFill } from "react-icons/ri";
 import { SiLimesurvey } from "react-icons/si";
-import { useAdmin } from "@/context/AdminContext";
 import toast from "react-hot-toast";
+import { useAuth } from "@/context/AuthContext";
 
 const Sidebar = () => {
   const [showMenu, setShowMenu] = useState(false);
   const pathname = usePathname();
-  const { currentAdmin,logOut} = useAdmin();
-  const handleLogout = async () => {
-    await logOut();
+  const { currentUser,handleLogout} = useAuth();
+
+  const logOut = async () => {
     toast.success("Logged out successfully");
+    await handleLogout();
   };
+  
   const menuItems = [
     {
       icon: <HiOutlineSquares2X2 className='text-xl' />,
@@ -186,14 +111,14 @@ const Sidebar = () => {
 
         <div className="pt-2 mt-4 border-t flex items-center gap-2 w-full">
             <Image
-              src={currentAdmin ? currentAdmin?.image : "/user.png"}
+              src={currentUser ? currentUser?.image : "/user.png"}
               alt="User"
               width={40}
               height={40}
               className="border-2 h-10 w-10 rounded-full object-center object-cover"
             />
-            <p className="w-full flex-1 truncate capitalize">{currentAdmin?.username}</p>
-            <FiLogOut onClick={handleLogout} size={20} className="hover:bg-gray-100 h-8 w-8 p-2 rounded-md cursor-pointer"/>
+            <p className="w-full flex-1 truncate capitalize">{currentUser?.username}</p>
+            <FiLogOut onClick={logOut} size={20} className="hover:bg-gray-100 h-8 w-8 p-2 rounded-md cursor-pointer"/>
         </div>
       </div>
     </div>

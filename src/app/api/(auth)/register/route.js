@@ -23,6 +23,7 @@ export const POST = async (req) => {
 
         const newUser = {
             username,
+            role: 'user',
             email,
             image,
             password: hashedPassword,
@@ -38,7 +39,7 @@ export const POST = async (req) => {
         const response = NextResponse.json(
             {
                 message: 'Registration successful',
-                user: { _id: result.insertedId, username, email, image, walletAmount: 0 },
+                user: { _id: result.insertedId, role: "user", username, email, image, walletAmount: 0 },
             },
             { status: 201 }
         );
