@@ -1,11 +1,10 @@
-import { MongoClient } from "mongodb";
+import connectToDatabase from "@/utils/mongodb";
 import { NextResponse } from "next/server";
 
 export async function GET(req) {
-    const client = new MongoClient(process.env.MONGO_URI);
+   
     try {
-        await client.connect();
-        const db = client.db(process.env.DATABASE);
+        const db = await connectToDatabase();
         const usersCollection = db.collection('Users');
 
         const totalUsers = await usersCollection.countDocuments();
@@ -25,7 +24,5 @@ export async function GET(req) {
     } catch (error) {
         console.error("Error fetching user stats:", error);
         return NextResponse.json({ message: "Failed to fetch stats" }, { status: 500 });
-    } finally {
-        await client.close();
-    }
+    } 
 }

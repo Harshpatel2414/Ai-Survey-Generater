@@ -20,12 +20,12 @@ export default function Header() {
 
   return (
     <header className="bg-gray-50 shadow-sm px-5 lg:px-20 py-4 flex items-center justify-between lg:gap-20 sticky top-0 right-0 z-50">
-      <Link href={"/"} className="flex gap-2 items-center">
+      <Link href={"/home"} className="flex gap-2 items-center">
         <SiLimesurvey size={30} className="text-[#4e8d99]" />
         <h1 className="text-lg font-bold text-primary">AI-Survey</h1>
       </Link>
       <div className="gap-5 items-center hidden md:flex text-[#4e8d99]">
-        <Link className="hover:text-[#6d445e]" href={"/"}>Home</Link>
+        <Link className="hover:text-[#6d445e]" href={"/home"}>Home</Link>
         <Link className="hover:text-[#6d445e]" href={"/about"}>About</Link>
         <Link className="hover:text-[#6d445e]" href={"/contact"}>Contact</Link>
       </div>
@@ -127,7 +127,7 @@ export default function Header() {
       {isDropdownOpen && !currentUser && (
         <div className="absolute top-20 right-5 bg-white shadow-md mt-2 rounded-md w-60 z-50">
           <div className="flex flex-col gap-2 lg:hidden items-center text-[#4e8d99] m-4">
-            <Link onClick={() => setIsDropdownOpen(false)} href={"/"}>
+            <Link onClick={() => setIsDropdownOpen(false)} href={"/home"}>
               Home
             </Link>
             <Link onClick={() => setIsDropdownOpen(false)} href={"/about"}>

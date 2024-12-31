@@ -67,7 +67,7 @@ const Sidebar = () => {
         <div className="flex items-center gap-2 w-full h-fit">
           <div className="flex flex-1 w-full items-center gap-2 cursor-pointer">
             <SiLimesurvey size={34} className="text-[#4e8d99]" />
-            <Link href={"/"} className="text-xl font-semibold">
+            <Link href={"/home"} className="text-xl font-semibold">
               AI-Survey
             </Link>
           </div>

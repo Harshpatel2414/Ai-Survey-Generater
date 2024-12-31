@@ -7,6 +7,7 @@ import Link from "next/link";
 import Image from "next/image";
 import { useRouter } from "next/navigation";
 import toast from "react-hot-toast";
+import Cookies from "js-cookie";
 
 export default function SurveyForm() {
   // Use state to force re-renders when the form values change
@@ -124,12 +125,13 @@ export default function SurveyForm() {
       setLoading(false);
       return;
     }
-
+    let csrfToken = Cookies.get("csrf-token");
     try {
       const apiResponse = await fetch("/api/survey", {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
+          "X-CSRF-Token": csrfToken,
         },
         body: JSON.stringify({ surveyQuestions, characteristics, individuals }),
       });
@@ -165,6 +167,7 @@ export default function SurveyForm() {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
+          "X-CSRF-Token": csrfToken,
         },
         body: JSON.stringify({ amount: cost, userId: currentUser._id }),
       });

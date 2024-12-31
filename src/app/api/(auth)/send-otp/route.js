@@ -1,17 +1,15 @@
-import { MongoClient } from 'mongodb';
-import nodemailer from 'nodemailer';
 import { NextResponse } from 'next/server';
+import connectToDatabase from '@/utils/mongodb';
+import nodemailer from 'nodemailer';
 
 const generateOTP = () => Math.floor(100000 + Math.random() * 900000).toString();
 
 export const POST = async (req) => {
   const { email } = await req.json();
-  const client = new MongoClient(process.env.MONGO_URI);
   const otp = generateOTP();
 
   try {
-    await client.connect();
-    const db = client.db(process.env.DATABASE);
+    let db = await connectToDatabase();
     const collection = db.collection('Users');
 
     const user = await collection.findOne({ email });
@@ -148,7 +146,5 @@ export const POST = async (req) => {
   } catch (error) {
     console.error('Error sending OTP:', error);
     return NextResponse.json({ message: 'Internal Server Error' }, { status: 500 });
-  } finally {
-    await client.close();
-  }
+  } 
 };

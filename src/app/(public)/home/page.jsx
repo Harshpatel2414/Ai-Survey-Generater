@@ -1,8 +1,8 @@
-import Footer from '@/components/Footer';
-import SurveyForm from '@/components/SurveyForm';
-import SurveyResults from '@/components/SurveyResults';
+import Footer from "@/components/Footer";
+import SurveyForm from "@/components/SurveyForm";
+import SurveyResults from "@/components/SurveyResults";
 
-export default function HomePage() {
+const HomePage = () => {
   return (
     <>
       <main className="w-full flex-1 bg-gray-100 mx-auto flex flex-col lg:flex-row ">
@@ -26,4 +26,6 @@ export default function HomePage() {
       <Footer />
     </>
   );
-}
+};
+
+export default HomePage;

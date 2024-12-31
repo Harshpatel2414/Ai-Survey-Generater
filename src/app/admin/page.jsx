@@ -7,6 +7,7 @@ import {
   FaWallet,
 } from "react-icons/fa";
 import { FaMoneyBillTrendUp } from "react-icons/fa6";
+import Cookies from "js-cookie";
 import Loading from '@/app/loading'
 import StatCard from "@/components/admin/StatCard";
 import { useAuth } from "@/context/AuthContext";
@@ -17,11 +18,17 @@ const AdminPanel = () => {
   const [transactionsData, setTransactionsData] = useState(null);
   const [usersData, setUsersData] = useState(null);
   const { currentUser } = useAuth();
+  let csrfToken = Cookies.get("csrf-token");
 
   const fetchTransactions = async () => {
     setLoading(true);
     try {
-      const response = await fetch(`/api/admin/transactions/stats`);
+      const response = await fetch(`/api/admin/transactions/stats`,{
+        method: "GET",
+        headers: {
+          "X-CSRF-Token": csrfToken,
+        },
+      });
       if (!response.ok) throw new Error("Failed to fetch transactions");
       const data = await response.json();
       setTransactionsData(data);
@@ -34,7 +41,12 @@ const AdminPanel = () => {
   const fetchUsers = async () => {
     setUsersLoading(true);
     try {
-      const response = await fetch(`/api/admin/users/stats`);
+      const response = await fetch(`/api/admin/users/stats`,{
+        method: "GET",
+        headers: {
+          "X-CSRF-Token": csrfToken,
+        },
+      })
       if (!response.ok) throw new Error("Failed to fetch users");
       const data = await response.json();
       setUsersData(data);

@@ -23,12 +23,17 @@ export default function AdminLogin() {
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({ email, password }),
       });
-      const { user } = await res.json();
-      if (user?.role !== "admin") {
-        setError("Not an admin account! please login with an admin details");
+      const data = await res.json();
+      if(res.ok){
+        if (data.user?.role !== "admin") {
+          setError("Not an admin account! please login with an admin details");
+          return;
+        }
+        setCurrentUser(data.user);
+      }else{
+        setError( data.message || "Invalid email or password");
         return;
       }
-      setCurrentUser(user);
       toast.success("Admin login successful");
     } catch (err) {
       setError(err.message);

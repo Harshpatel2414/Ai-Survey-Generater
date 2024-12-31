@@ -1,10 +1,17 @@
 "use client";
+import React, { useState } from "react";
 import { useAuth } from "@/context/AuthContext";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
-import React, { useLayoutEffect, useState } from "react";
 import toast from "react-hot-toast";
+import { z } from "zod";
+import Cookies from "js-cookie";
 import { FaUser, FaLock, FaSpinner } from "react-icons/fa";
+
+const loginSchema = z.object({
+  email: z.string().email({ message: "Invalid email address" }),
+  password: z.string().min(1, { message: "Password is required" }),
+});
 
 const LoginPage = () => {
   const [email, setEmail] = useState("");
@@ -17,31 +24,39 @@ const LoginPage = () => {
   const handleSubmit = async (e) => {
     e.preventDefault();
     setLoading(true);
+
+    // Zod validation
+    const validation = loginSchema.safeParse({ email, password });
+    if (!validation.success) {
+      setLoading(false);
+      toast.error(validation.error.errors[0].message);
+      return;
+    }
+
     try {
-      const response = await fetch("/api/login", {
+      const response = await fetch(`${process.env.NEXT_PUBLIC_API_BASE_URL}/login`, {
         method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-        },
+        headers: { "Content-Type": "application/json" },
         body: JSON.stringify({ email, password }),
       });
       const result = await response.json();
       if (response.ok) {
         toast.success(result.message);
-        router.push("/");
         setCurrentUser(result.user);
+        router.push("/home");
       } else {
         toast.error(result.message);
       }
     } catch (error) {
       console.error("Error:", error.message);
+      toast.error("An unexpected error occurred.");
     } finally {
       setLoading(false);
     }
   };
 
   if (currentUser) {
-    router.push("/");
+    router.push("/home");
   }
 
   return (

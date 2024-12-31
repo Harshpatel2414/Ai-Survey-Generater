@@ -1,6 +1,7 @@
 "use client";
 
 import Loading from "@/app/loading";
+import Cookies from "js-cookie";
 import React, { useState, useEffect } from "react";
 import toast from "react-hot-toast";
 import { FaSync } from "react-icons/fa";
@@ -12,6 +13,7 @@ const Transactions = () => {
   const [loading, setLoading] = useState(false);
   const [currentPage, setCurrentPage] = useState(1);
   const [displayedTransactions, setDisplayedTransactions] = useState([]);
+  let csrfToken = Cookies.get("csrf-token");
 
   useEffect(() => {
     fetchTransactions();
@@ -20,9 +22,13 @@ const Transactions = () => {
   const fetchTransactions = async () => {
     setLoading(true);
     try {
-      const response = await fetch("/api/admin/transactions");
+      const response = await fetch("/api/admin/transactions",{
+        method: "GET",
+        headers: {
+          "X-CSRF-Token": csrfToken,
+        },
+      });
       const data = await response.json();
-      console.log("data >>>", data)
       setTransactions(data);
       setLoading(false);
       setDisplayedTransactions(data.slice(0, transactionsPerPage));

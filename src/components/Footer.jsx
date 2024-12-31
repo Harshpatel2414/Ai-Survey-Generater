@@ -7,7 +7,7 @@ const Footer = () => {
     <footer className="py-8 px-5 text-center text-gray-600 bg-white flex flex-col gap-5">
       <div className="flex gap-5 items-center md:justify-center">
         <SiLimesurvey size={30} className="text-[#4e8d99]" />
-        <Link href={"/"} className="text-lg font-bold text-primary">
+        <Link href={"/home"} className="text-lg font-bold text-primary">
           AI-Survey
         </Link>
       </div>

@@ -2,6 +2,7 @@
 
 import { createContext, useContext, useEffect, useState } from "react";
 import { useAppContext } from "./AppContext";
+import Cookies from "js-cookie";
 
 const AuthContext = createContext();
 
@@ -19,8 +20,15 @@ export const AuthContextProvider = ({ children }) => {
 
 
   const refreshUser = async () => {
+    let csrfToken = Cookies.get("csrf-token");
     try {
-      const response = await fetch(`/api/me`);
+      const response = await fetch(`/api/me`,{
+        method: "GET",
+        headers: {
+          "Content-Type": "application/json",
+          "X-CSRF-Token": csrfToken,
+        },
+      });
       if (!response.ok) {
         return;
       }

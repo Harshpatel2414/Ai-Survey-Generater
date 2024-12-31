@@ -1,37 +1,37 @@
-import { NextResponse } from "next/server";
-import { cookies } from "next/headers";
-import jwt from "jsonwebtoken";
-import { MongoClient, ObjectId } from "mongodb";
+import { NextResponse } from 'next/server';
+import { jwtVerify } from 'jose';
+import { ObjectId } from 'mongodb';
+import connectToDatabase from '@/utils/mongodb';
+
+const verifyToken = async (token) => {
+  const secret = new TextEncoder().encode(process.env.JWT_SECRET);
+  const { payload } = await jwtVerify(token, secret);
+  return payload;
+};
 
 export const GET = async (req) => {
-  // Await the cookies() call
-  const cookieStore = await cookies(req);
-  const token = cookieStore.get('jwtAuth')?.value;
+  const token = req.cookies.get('jwtAuth')?.value;
 
   if (!token) {
     return NextResponse.json({ message: 'Unauthorized' }, { status: 401 });
   }
 
   try {
-    // Verify the JWT token
-    const { id } = jwt.verify(token, process.env.JWT_SECRET);
+    const { id } = await verifyToken(token);
 
-    // Connect to the database and fetch user details
-    const client = new MongoClient(process.env.MONGO_URI);
-    await client.connect();
-    const db = client.db(process.env.DATABASE);
+    let db = await connectToDatabase();
     const collection = db.collection('Users');
 
     const user = await collection.findOne({ _id: new ObjectId(id) });
     if (!user) {
-      return NextResponse.json(null);
+      return NextResponse.json(null, { status: 404 });
     }
 
-    // Remove the password from the response
     delete user.password;
 
     return NextResponse.json(user, { status: 200 });
   } catch (error) {
+    console.error('Token verification or database error:', error);
     return NextResponse.json(null, { status: 500 });
   }
 };

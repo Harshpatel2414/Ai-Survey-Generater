@@ -1,14 +1,12 @@
 export const maxDuration = 30;
-import { MongoClient } from 'mongodb';
 import { NextResponse } from 'next/server';
+import connectToDatabase from '@/utils/mongodb';
 
 export const GET = async (req, { params }) => {
-  const client = new MongoClient(process.env.MONGO_URI);
 
   try {
     const { id } = await params;
-    await client.connect();
-    const db = client.db(process.env.DATABASE);
+    let db = await connectToDatabase();
     const transactionCollection = db.collection('Transactions');
 
     // Find transactions for the given userId
@@ -21,7 +19,5 @@ export const GET = async (req, { params }) => {
   } catch (error) {
     console.error('Error fetching transactions:', error);
     return NextResponse.json({ message: 'Internal Server Error' }, { status: 500 });
-  } finally {
-    await client.close();
   }
 };

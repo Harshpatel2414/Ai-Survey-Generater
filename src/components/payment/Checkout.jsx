@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { memo, useState } from "react";
 import {
   PaymentElement,
   useElements,
@@ -31,7 +31,7 @@ const Checkout = ({ amount, clientSecret }) => {
       elements,
       clientSecret: clientSecret,
       confirmParams: {
-        return_url: `${"https://ai-survey-generater.vercel.app"}/success?amount=${amount}&userId=${currentUser._id}&email=${currentUser.email}&date=${date}`,
+        return_url: `${"http://localhost:3000"}/success?amount=${amount}&userId=${currentUser._id}&email=${currentUser.email}&date=${date}`,
       },
       
     });
@@ -55,4 +55,4 @@ const Checkout = ({ amount, clientSecret }) => {
   );
 };
 
-export default Checkout;
+export default memo(Checkout);

@@ -1,10 +1,10 @@
 export const maxDuration = 60;
-import { MongoClient, ObjectId } from 'mongodb';
 import { NextResponse } from 'next/server';
+import {  ObjectId } from 'mongodb';
 import Stripe from 'stripe';
+import connectToDatabase from '@/utils/mongodb';
 
 const stripe = new Stripe(process.env.STRIPE_SECRET_KEY);
-const mongoClient = new MongoClient(process.env.MONGO_URI);
 
 export const POST = async (req, res) => {
   const { paymentIntentId,
@@ -12,17 +12,16 @@ export const POST = async (req, res) => {
     userId,
     email,
     date } = await req.json(); // Get necessary data
-
+ 
   try {
+    let db = await connectToDatabase();
+    const userCollection = db.collection('Users');
+    const transactionsCollection = db.collection('Transactions');
     // Verify the payment intent status with Stripe
     const paymentIntent = await stripe.paymentIntents.retrieve(paymentIntentId);
 
     if (paymentIntent.status === 'succeeded') {
       // Connect to MongoDB
-      await mongoClient.connect();
-      const db = mongoClient.db(process.env.DATABASE);
-      const userCollection = db.collection('Users');
-      const transactionsCollection = db.collection('Transactions');
 
       await userCollection.updateOne(
         { _id: new ObjectId(userId) },

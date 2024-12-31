@@ -1,5 +1,6 @@
 "use client";
 import Loading from "@/app/loading";
+import Cookies from "js-cookie";
 import { useState, useEffect } from "react";
 import toast from "react-hot-toast";
 import { FaPaperPlane, FaSearch, FaSync } from "react-icons/fa";
@@ -23,6 +24,7 @@ function SupportPage() {
   const [loading, setLoading] = useState(false);
   const [reply, setReply] = useState("");
   const [searchTerm, setSearchTerm] = useState("");  
+  let csrfToken = Cookies.get("csrf-token");
 
   useEffect(() => {
     fetchMessages();
@@ -30,7 +32,13 @@ function SupportPage() {
 
   async function fetchMessages() {
     setLoading(true);
-    const response = await fetch("/api/admin/support");
+    const response = await fetch("/api/admin/support",{
+      method: "GET",
+      headers: {
+        "Content-Type": "application/json",
+        "X-CSRF-Token": csrfToken,
+      },
+    });
     const data = await response.json();
     setMessages(data);
     setFilteredMessages(data);  
@@ -47,6 +55,7 @@ function SupportPage() {
       method: "POST",
       headers: {
         "Content-Type": "application/json",
+        "X-CSRF-Token": csrfToken,
       },
       body: JSON.stringify({ email: selectedEmail, replyMessage: reply }),
     });

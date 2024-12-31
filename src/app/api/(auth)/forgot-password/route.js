@@ -1,14 +1,12 @@
-import { MongoClient } from 'mongodb';
-import bcrypt from 'bcrypt';
 import { NextResponse } from 'next/server';
+import bcrypt from 'bcrypt';
+import connectToDatabase from '@/utils/mongodb';
 
 export const POST = async (req) => {
   const { email, otp, newPassword } = await req.json();
-  const client = new MongoClient(process.env.MONGO_URI);
 
   try {
-    await client.connect();
-    const db = client.db(process.env.DATABASE);
+    let db = await connectToDatabase();
     const collection = db.collection('Users');
 
     const user = await collection.findOne({ email });
@@ -24,9 +22,6 @@ export const POST = async (req) => {
 
     return NextResponse.json({ message: 'Password reset successful' }, { status: 200 });
   } catch (error) {
-    console.error('Error resetting password:', error);
     return NextResponse.json({ message: 'Internal Server Error' }, { status: 500 });
-  } finally {
-    await client.close();
   }
-};
+} 

@@ -1,6 +1,7 @@
 "use client";
 
 import Loading from "@/app/loading";
+import Cookies from "js-cookie";
 import React, { useState, useEffect } from "react";
 import toast from "react-hot-toast";
 import { FaSync } from "react-icons/fa";
@@ -59,6 +60,7 @@ const Users = () => {
   const [action, setAction] = useState("");
   const [selectedUser, setSelectedUser] = useState(null);
   const [blockReason, setBlockReason] = useState("");
+  let csrfToken = Cookies.get("csrf-token");
 
   useEffect(() => {
     fetchUsers();
@@ -67,8 +69,14 @@ const Users = () => {
   const fetchUsers = async () => {
     setLoading(true);
     try {
-      const response = await fetch("/api/admin/users");
+      const response = await fetch("/api/admin/users",{
+        method: "GET",
+        headers: {
+          "X-CSRF-Token": csrfToken,
+        },
+      });
       const data = await response.json();
+      console.log("data >>>", data)
       setUsers(data);
       setLoading(false);
       setDisplayedUsers(data.slice(0, usersPerPage));
@@ -105,7 +113,10 @@ const Users = () => {
     try {
       const response = await fetch("/api/admin/users", {
         method: "POST",
-        headers: { "Content-Type": "application/json" },
+        headers: { 
+          "Content-Type": "application/json",
+          "X-CSRF-Token": csrfToken,
+        },
         body: JSON.stringify({
           userId: selectedUser._id,
           action: action,

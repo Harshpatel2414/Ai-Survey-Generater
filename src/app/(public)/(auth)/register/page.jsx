@@ -4,19 +4,38 @@ import Image from "next/image";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { useState } from "react";
-import toast, { Toaster } from "react-hot-toast";
+import toast from "react-hot-toast";
+import { z } from "zod";
 import { FaUser, FaEnvelope, FaLock, FaSpinner } from "react-icons/fa";
+
+const registerSchema = z
+  .object({
+    username: z.string().min(1, { message: "Username is required" }),
+    email: z.string().email({ message: "Invalid email address" }),
+    password: z
+      .string()
+      .min(10, { message: "Password must be at least 10 characters long" }),
+    confirmPassword: z.string().min(10),
+    termsAccepted: z.boolean().refine((value) => value, {
+      message: "You must agree to the terms and conditions",
+    }),
+    image: z.string(),
+  })
+  .refine((data) => data.password === data.confirmPassword, {
+    message: "Passwords do not match",
+    path: ["confirmPassword"],
+  });
 
 const RegisterPage = () => {
   const router = useRouter();
-  const { currentUser, setCurrentUser } = useAuth();
+  const { setCurrentUser } = useAuth();
   const [formData, setFormData] = useState({
     username: "",
     email: "",
     password: "",
     confirmPassword: "",
     image: "",
-    termsAccepted: false, // Added field for terms acceptance
+    termsAccepted: false,
   });
   const [imagePreview, setImagePreview] = useState("");
   const [loading, setLoading] = useState(false);
@@ -44,30 +63,32 @@ const RegisterPage = () => {
 
   const handleSubmit = async (e) => {
     e.preventDefault();
+    if (!formData.image) {
+      toast.error("Please upload a profile image.");
+      return;
+    }
+    const formDataToSubmit = {
+      ...formData,
+      image: formData.image || "", // If no image is provided, pass an empty string
+    };
 
-    if (!formData.termsAccepted) {
-      toast.error("You must agree to the terms and conditions.");
-      return;
-    }
-    if (formData.password.length < 8) {
-      toast.error("Password must be at least 8 characters.");
-      return;
-    }
-    if (formData.password !== formData.confirmPassword) {
-      toast.error("Passwords do not match.");
+    const validation = registerSchema.safeParse(formDataToSubmit);
+    if (!validation.success) {
+      toast.error(validation.error.errors[0].message);
       return;
     }
 
     setLoading(true);
 
     try {
-      const response = await fetch("/api/register", {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify(formData),
-      });
+      const response = await fetch(
+        `${process.env.NEXT_PUBLIC_API_BASE_URL}/register`,
+        {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify(formDataToSubmit), // Make sure the updated formData is sent here
+        }
+      );
 
       const result = await response.json();
 
@@ -226,7 +247,6 @@ const RegisterPage = () => {
           </p>
         </div>
       </div>
-      <Toaster />
     </div>
   );
 };

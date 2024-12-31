@@ -1,7 +1,6 @@
 export const maxDuration = 30;
-import { MongoClient } from 'mongodb';
 import { NextResponse } from 'next/server';
-
+import connectToDatabase from '@/utils/mongodb';
 
 export const POST = async (req) => {
     const { name, email, message } = await req.json();
@@ -10,13 +9,8 @@ export const POST = async (req) => {
         return NextResponse.json({ message: 'Missing required fields.' }, { status: 400 });
     }
 
-    let client;
-
     try {
-        client = new MongoClient(process.env.MONGO_URI);
-        await client.connect();
-
-        const db = client.db(process.env.DATABASE);
+        let db = await connectToDatabase();
         const contactsCollection = db.collection('Contacts');
 
        await contactsCollection.insertOne({
@@ -29,7 +23,5 @@ export const POST = async (req) => {
         return NextResponse.json({ message: 'Contact form submitted successfully.' }, { status: 201 });
     } catch (error) {
         return NextResponse.json({ message: 'An error occurred while submitting the form.' }, { status: 500 });
-    } finally {
-        client.close();
-    }
+    } 
 };

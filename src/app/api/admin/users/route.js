@@ -1,31 +1,26 @@
 export const maxDuration = 30;
-import { MongoClient, ObjectId } from 'mongodb';
 import { NextResponse } from 'next/server';
+import { ObjectId } from 'mongodb';
+import connectToDatabase from '@/utils/mongodb';
 
 export const GET = async (req) => {
-  const client = new MongoClient(process.env.MONGO_URI);
   try {
-    await client.connect();
-    const db = client.db(process.env.DATABASE);
+    const db = await connectToDatabase();
     const collection = db.collection('Users');
 
-    const user = await collection.find().project({ username: 1, email: 1, _id: 1, walletAmount: 1,blocked:1}).toArray();
+    const users = await collection.find().project({ username: 1, email: 1, _id: 1, walletAmount: 1,blocked:1}).toArray();
 
-    return NextResponse.json(user, { status: 200 });
+    return NextResponse.json(users, { status: 200 });
   } catch (error) {
     console.error('Error logging in user:', error);
     return NextResponse.json({ message: 'Internal Server Error' }, { status: 500 });
-  } finally {
-    await client.close();
-  }
+  } 
 }
 
 export const POST = async (request) => {
   const { userId, action, reason } = await request.json();
   try {
-    const client = new MongoClient(process.env.MONGO_URI);
-    await client.connect();
-    const db = client.db(process.env.DATABASE);
+    const db = await connectToDatabase();
     const collection = db.collection('Users');
 
     const update = action === 'block'

@@ -5,14 +5,15 @@ import { toast } from "react-hot-toast";
 import Image from "next/image";
 import { useAuth } from "@/context/AuthContext";
 import { useAppContext } from "@/context/AppContext";
+import Cookies from "js-cookie";
 
 const Success = () => {
   const router = useRouter();
-  const searchParams = useSearchParams(); 
+  const searchParams = useSearchParams();
   const { refreshUser } = useAuth();
   const { setIsProcessPayment } = useAppContext();
   const [loading, setLoading] = useState(false);
-
+ 
   // Extract parameters from the URL using searchParams
   const amount = searchParams.get("amount");
   const userId = searchParams.get("userId");
@@ -47,11 +48,13 @@ const Success = () => {
     // Function to call the backend API to complete payment
     const completePayment = async () => {
       setLoading(true);
+      let csrfToken = Cookies.get("csrf-token");
       try {
         const response = await fetch("/api/payment/complete", {
           method: "POST",
           headers: {
             "Content-Type": "application/json",
+            "X-CSRF-Token": csrfToken,
           },
           body: JSON.stringify(transactionData),
         });
@@ -62,7 +65,7 @@ const Success = () => {
 
           // Mark payment as processed (store in localStorage)
           localStorage.setItem("paymentProcessed", "true");
-        } else {
+                  } else {
           toast.error("Error completing payment.");
         }
       } catch (error) {
@@ -71,7 +74,7 @@ const Success = () => {
       } finally {
         setLoading(false);
         setIsProcessPayment(true);
-        router.push("/"); // Redirect to home after processing
+        router.push("/home");
       }
     };
 

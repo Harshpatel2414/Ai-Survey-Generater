@@ -1,5 +1,6 @@
 "use client";
 import React, { useEffect, useState } from "react";
+import Cookies from "js-cookie";
 import { loadStripe } from "@stripe/stripe-js";
 import { Elements } from "@stripe/react-stripe-js";
 import { FaWallet } from "react-icons/fa6";
@@ -38,8 +39,15 @@ const ProfilePage = () => {
     if (!currentUser) return;
     const fetchTransactions = async () => {
       setTransactionLoading(true);
+      let csrfToken = Cookies.get("csrf-token");
       try {
-        const response = await fetch(`/api/transactions/${currentUser._id}`);
+        const response = await fetch(`/api/transactions/${currentUser._id}`,{
+          method: "GET",
+          headers: {
+            "Content-Type": "application/json",
+            "X-CSRF-Token": csrfToken,
+          },
+        });
         if (response.ok) {
           const data = await response.json();
           setTransactions(data.transactions);
@@ -65,12 +73,15 @@ const ProfilePage = () => {
       toast.error("Minimum transaction amount is $10.");
       return;
     }
-
+    let csrfToken = Cookies.get("csrf-token");
     setLoading(true);
     try {
       const response = await fetch("/api/payment/create-payment-intent", {
         method: "POST",
-        headers: { "Content-Type": "application/json" },
+        headers: { 
+          "Content-Type": "application/json",
+          "X-CSRF-Token": csrfToken,
+         },
         body: JSON.stringify({ amount: convertToSubcurrency(amount) }),
       });
 
@@ -96,7 +107,7 @@ const ProfilePage = () => {
   );
 
   if (!currentUser) {
-    router.push("/");
+    router.push("/home");
   }
 
   return (
