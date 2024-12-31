@@ -60,7 +60,7 @@ const AdminPanel = () => {
   useEffect(() => {
     fetchTransactions();
     fetchUsers();
-  }, []);
+  });
 
   return (
     <div className="flex flex-col h-full w-full overflow-y-scroll hide-scrollbar bg-white pb-10">

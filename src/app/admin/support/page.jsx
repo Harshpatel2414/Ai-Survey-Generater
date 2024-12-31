@@ -1,7 +1,7 @@
 "use client";
+import { useState, useEffect } from "react";
 import Loading from "@/app/loading";
 import Cookies from "js-cookie";
-import { useState, useEffect } from "react";
 import toast from "react-hot-toast";
 import { FaPaperPlane, FaSearch, FaSync } from "react-icons/fa";
 
@@ -29,7 +29,7 @@ function SupportPage() {
 
   useEffect(() => {
     fetchMessages();
-  }, []);
+  });
 
   async function fetchMessages() {
     setLoading(true);
