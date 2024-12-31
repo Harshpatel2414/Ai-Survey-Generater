@@ -29,7 +29,7 @@ function SupportPage() {
 
   useEffect(() => {
     fetchMessages();
-  });
+  },[]);
 
   async function fetchMessages() {
     setLoading(true);

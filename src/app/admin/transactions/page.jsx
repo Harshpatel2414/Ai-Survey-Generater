@@ -17,7 +17,7 @@ const Transactions = () => {
 
   useEffect(() => {
     fetchTransactions();
-  });
+  },[]);
 
   const fetchTransactions = async () => {
     setLoading(true);
