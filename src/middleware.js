@@ -3,7 +3,6 @@ import { jwtVerify } from "jose";
 
 // Allowed origins for CORS
 const ALLOWED_ORIGINS = [
-  "http://localhost:3000", // Local development
   "https://ai-survey-generator.vercel.app", // Production domain
 ];
 
