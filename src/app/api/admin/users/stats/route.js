@@ -1,6 +1,7 @@
 import connectToDatabase from "@/utils/mongodb";
 import { NextResponse } from "next/server";
 
+
 export async function GET(req) {
    
     try {

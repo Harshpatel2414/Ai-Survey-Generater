@@ -22,8 +22,9 @@ function SupportPage() {
   const [messages, setMessages] = useState([]);
   const [filteredMessages, setFilteredMessages] = useState([]);
   const [loading, setLoading] = useState(false);
-  const [reply, setReply] = useState("");
-  const [searchTerm, setSearchTerm] = useState("");  
+  const [sendingMsg, setSendingMsg] = useState(false);
+  const [replyState, setReplyState] = useState({});
+  const [searchTerm, setSearchTerm] = useState("");
   let csrfToken = Cookies.get("csrf-token");
 
   useEffect(() => {
@@ -32,7 +33,7 @@ function SupportPage() {
 
   async function fetchMessages() {
     setLoading(true);
-    const response = await fetch("/api/admin/support",{
+    const response = await fetch("/api/admin/support", {
       method: "GET",
       headers: {
         "Content-Type": "application/json",
@@ -41,12 +42,14 @@ function SupportPage() {
     });
     const data = await response.json();
     setMessages(data);
-    setFilteredMessages(data);  
+    setFilteredMessages(data);
     setLoading(false);
   }
 
-  const handleSendReply = async (selectedEmail) => {
-    if (!reply) {
+  const handleSendReply = async (email) => {
+    const replyMessage = replyState[email];
+    setSendingMsg(true);
+    if (!replyMessage) {
       toast.error("Please enter a reply message");
       return;
     }
@@ -57,21 +60,26 @@ function SupportPage() {
         "Content-Type": "application/json",
         "X-CSRF-Token": csrfToken,
       },
-      body: JSON.stringify({ email: selectedEmail, replyMessage: reply }),
+      body: JSON.stringify({ email, replyMessage }),
     });
 
     const result = await response.json();
     if (response.ok) {
       toast.success(result.message);
-      setReply("");
+      setReplyState((prev) => ({ ...prev, [email]: "" }));
     } else {
       toast.error("Failed to send reply");
     }
+    setSendingMsg(false);
+  };
+
+  const handleReplyChange = (email, value) => {
+    setReplyState((prev) => ({ ...prev, [email]: value }));
   };
 
   const handleSearch = (e) => {
     const searchValue = e.target.value;
-    setSearchTerm(searchValue); 
+    setSearchTerm(searchValue);
 
     if (searchValue === "") {
       setFilteredMessages(messages);
@@ -88,7 +96,10 @@ function SupportPage() {
       <div className="flex flex-col w-full md:flex-row md:items-center gap-4 justify-between p-4 border-b">
         <div className="flex items-center gap-4">
           <h1 className="text-lg font-semibold text-[#4e8d99]">Support Messages</h1>
-          <button className="flex items-center gap-2 px-3 py-1 rounded-md border text-[#4e8d99] hover:bg-gray-50">
+          <button
+            onClick={fetchMessages}
+            className="flex items-center gap-2 px-3 py-1 rounded-md border text-[#4e8d99] hover:bg-gray-50"
+          >
             <FaSync className="w-4 h-4" />
             Refresh
           </button>
@@ -97,7 +108,7 @@ function SupportPage() {
           <FaSearch className="w-6 h-6 text-gray-300" />
           <input
             type="text"
-            value={searchTerm}  
+            value={searchTerm}
             onChange={handleSearch}
             placeholder="Search user by email"
             className="w-full md:w-80 outline-none bg-transparent"
@@ -114,7 +125,7 @@ function SupportPage() {
                 key={message.email}
                 className="p-5 flex flex-col relative border-b bg-white hover:drop-shadow-lg drop-shadow-md rounded-md w-full"
               >
-                <div className=" flex-1">
+                <div className="flex-1">
                   <div className="border-b pb-2">
                     <p className="font-semibold text-lg text-[#4e8d99] capitalize">
                       {message.name}
@@ -130,18 +141,18 @@ function SupportPage() {
                 </p>
                 <div className="flex flex-col md:flex-row items-end gap-4 mt-4">
                   <textarea
-                    value={reply}
+                    value={replyState[message.email] || ""}
                     rows={2}
-                    onChange={(e) => setReply(e.target.value)}
+                    onChange={(e) => handleReplyChange(message.email, e.target.value)}
                     placeholder="Enter your reply"
-                    className="w-full flex-1 p-2 border rounded-md  outline-none resize-none"
+                    className="w-full flex-1 p-2 border rounded-md outline-none resize-none"
                   />
                   <button
                     onClick={() => handleSendReply(message.email)}
-                    className="text-white w-fit h-fit bg-[#4e8d99] flex items-center gap-3 px-4 py-2 rounded-md"
+                    className="text-white w-28 h-fit bg-[#4e8d99] flex items-center gap-3 px-4 py-2 rounded-md"
                   >
-                    <span className="text-white">Send</span>
-                    <FaPaperPlane className="w-5 h-5 text-white" />
+                    <span className="text-white flex-1">{sendingMsg ? "Sending.." :"Send"}</span>
+                    {!sendingMsg && <FaPaperPlane className="w-5 h-5 text-white" />}
                   </button>
                 </div>
               </div>
