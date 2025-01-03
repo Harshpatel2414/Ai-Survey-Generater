@@ -29,8 +29,23 @@ const generateCSRFToken = () => {
   return crypto.randomBytes(32).toString('hex'); // Secure CSRF token (64 characters)
 };
 
+const getClientIp = (req) => {
+  const forwarded = req.headers.get('x-forwarded-for');
+  
+  if (forwarded) {
+    return forwarded.split(',')[0].trim(); 
+  }
+  const ip = req.ip || req.connection?.remoteAddress || req.socket?.remoteAddress;
+  if (ip === '::1') {
+    ip = '127.0.0.1';
+  }
+  
+  return ip || 'unknown'; 
+};
+
 export const POST = async (req) => {
-  const ip = req.ip || req.headers['x-forwarded-for']?.split(',')[0] || 'unknown';
+  const ip = getClientIp(req);
+  console.log("ip >>>", ip)
 
   if (!rateLimiter(ip, maxAttempts, timeWindow)) {
     return NextResponse.json({ message: 'Too many login attempts. Try again later.' }, { status: 429 });
