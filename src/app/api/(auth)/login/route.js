@@ -30,17 +30,13 @@ const generateCSRFToken = () => {
 };
 
 const getClientIp = (req) => {
-  const forwarded = req.headers.get('x-forwarded-for');
-  
-  if (forwarded) {
-    return forwarded.split(',')[0].trim(); 
-  }
-  const ip = req.ip || req.connection?.remoteAddress || req.socket?.remoteAddress;
+  let ip = req.headers.get('cf-connecting-ip') || req.headers.get('x-real-ip') || req.headers.get('x-forwarded-for') || req.socket.remoteAddress;
+
   if (ip === '::1') {
     ip = '127.0.0.1';
   }
-  
-  return ip || 'unknown'; 
+
+  return ip || 'unknown';
 };
 
 export const POST = async (req) => {
