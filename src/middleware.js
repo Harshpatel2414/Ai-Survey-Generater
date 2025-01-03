@@ -10,9 +10,11 @@ const ALLOWED_ORIGINS = [
 const PUBLIC_ROUTES = [
   "/api/login",
   "/api/register",
+  "/api/landing-info",
   "/api/logout",
   "/api/forgot-password",
   "/api/send-otp",
+  "/api/blogs",
   "/api/contact",
 ];
 
@@ -22,7 +24,7 @@ function verifyCsrfToken(req) {
 
   // CSRF token should match the one stored in the cookie
   if (!csrfTokenFromHeader || csrfTokenFromHeader !== csrfTokenFromCookie) {
-    throw new Error("Invalid CSRF token");
+    return NextResponse.json({ error: "Forbidden", message: "CSRF token mismatch" }, { status: 403 });
   }
 }
 
@@ -75,6 +77,10 @@ export async function middleware(req) {
     // Prevent access to "/" if the user has a valid token
     if (pathname === "/" && payload) {
       return NextResponse.redirect(new URL("/home", req.url)); 
+    }
+
+    if (pathname === "/profile" && !payload) {
+      return NextResponse.redirect(new URL("/home", req.url))``
     }
 
     // Allow access to public routes

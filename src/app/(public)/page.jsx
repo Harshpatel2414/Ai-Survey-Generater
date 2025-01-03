@@ -8,19 +8,21 @@ import Image from "next/image";
 const LandingPage = () => {
   const router = useRouter();
   const [isVisible, setIsVisible] = useState(false);
-
-  const heading = "AI Survey Generator";
-  const description =
-    "Create surveys effortlessly with the power of AI. Get started now and gather valuable insights in no time.";
+  const [info, setInfo] = useState({});
 
   const handleStartNow = () => {
     router.push("/home");
   };
 
   useEffect(() => {
-    setTimeout(() => {
-      setIsVisible(true);
-    }, 200);
+     fetch('/api/landing-info')
+      .then((res) => res.json())
+      .then((data) => {
+         console.log(data);
+        setInfo(data);
+        setIsVisible(true);
+      }
+    );
   }, []);
 
   return (
@@ -65,8 +67,8 @@ const LandingPage = () => {
         }`}
       >
         <SiLimesurvey size={50} className="text-[#4e8d99]" />
-        <h1 className="text-4xl font-bold mb-4 text-[#4e8d99]">{heading}</h1>
-        <p className="text-lg mb-6 text-gray-700">{description}</p>
+        <h1 className="text-4xl font-bold mb-4 text-[#4e8d99]">{info?.title}</h1>
+        <p className="text-lg mb-6 text-gray-700">{info?.description}</p>
         <button
           className="border-[#4e8d99] border-2 text-[#4e8d99] flex items-center px-6 py-2 rounded-full hover:bg-[#4e8d99] hover:text-gray-50 transition duration-300 scale-100"
           onClick={handleStartNow}

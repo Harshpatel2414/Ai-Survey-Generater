@@ -26,6 +26,7 @@ export default function Header() {
       </Link>
       <div className="gap-5 items-center hidden md:flex text-[#4e8d99]">
         <Link className="hover:text-[#6d445e]" href={"/home"}>Home</Link>
+        <Link className="hover:text-[#6d445e]" href={"/blogs"}>Blogs</Link>
         <Link className="hover:text-[#6d445e]" href={"/about"}>About</Link>
         <Link className="hover:text-[#6d445e]" href={"/contact"}>Contact</Link>
       </div>
@@ -125,10 +126,13 @@ export default function Header() {
 
       {/* Handle the case when logged out */}
       {isDropdownOpen && !currentUser && (
-        <div className="absolute top-20 right-5 bg-white shadow-md mt-2 rounded-md w-60 z-50">
+        <div className="absolute top-16 right-2 bg-white shadow-md mt-2 rounded-md w-60 z-50">
           <div className="flex flex-col gap-2 lg:hidden items-center text-[#4e8d99] m-4">
             <Link onClick={() => setIsDropdownOpen(false)} href={"/home"}>
               Home
+            </Link>
+            <Link onClick={() => setIsDropdownOpen(false)} href={"/blogs"}>
+              Blogs
             </Link>
             <Link onClick={() => setIsDropdownOpen(false)} href={"/about"}>
               About

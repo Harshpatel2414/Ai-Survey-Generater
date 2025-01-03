@@ -106,10 +106,6 @@ const ProfilePage = () => {
     currentPage * ITEMS_PER_PAGE
   );
 
-  if (!currentUser) {
-    router.push("/home");
-  }
-
   return (
     <div className="flex flex-col items-center justify-center pb-10">
       {/* Wallet Summary - Only visible when not adding money */}

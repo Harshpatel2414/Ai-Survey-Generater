@@ -1,29 +1,28 @@
 "use client";
 import React, { useState, useEffect } from "react";
-import {
-  FaDollarSign,
-  FaSearch,
-  FaUser,
-  FaWallet,
-} from "react-icons/fa";
+import { FaDollarSign, FaSearch, FaUser, FaWallet } from "react-icons/fa";
 import { FaMoneyBillTrendUp } from "react-icons/fa6";
 import Cookies from "js-cookie";
-import Loading from '@/app/loading'
+import Loading from "@/app/loading";
 import StatCard from "@/components/admin/StatCard";
 import { useAuth } from "@/context/AuthContext";
+import toast from "react-hot-toast";
 
 const AdminPanel = () => {
   const [loading, setLoading] = useState(false);
   const [usersLoading, setUsersLoading] = useState(false);
+  const [title, setTitle] = useState("");
+  const [description, setDescription] = useState("");
   const [transactionsData, setTransactionsData] = useState(null);
   const [usersData, setUsersData] = useState(null);
+  const [updatingLandingPage, setUpdatingLandingPage] = useState(false);
   const { currentUser } = useAuth();
   let csrfToken = Cookies.get("csrf-token");
 
   const fetchTransactions = async () => {
     setLoading(true);
     try {
-      const response = await fetch(`/api/admin/transactions/stats`,{
+      const response = await fetch(`/api/admin/transactions/stats`, {
         method: "GET",
         headers: {
           "X-CSRF-Token": csrfToken,
@@ -41,12 +40,12 @@ const AdminPanel = () => {
   const fetchUsers = async () => {
     setUsersLoading(true);
     try {
-      const response = await fetch(`/api/admin/users/stats`,{
+      const response = await fetch(`/api/admin/users/stats`, {
         method: "GET",
         headers: {
           "X-CSRF-Token": csrfToken,
         },
-      })
+      });
       if (!response.ok) throw new Error("Failed to fetch users");
       const data = await response.json();
       setUsersData(data);
@@ -60,7 +59,32 @@ const AdminPanel = () => {
   useEffect(() => {
     fetchTransactions();
     fetchUsers();
-  },[]);
+  }, []);
+
+  const handleUpdateLandingPage = async (e) => {
+    e.preventDefault();
+    try {
+      setUpdatingLandingPage(true);
+      const response = await fetch(`/api/admin/landing-info`, {
+        method: "PUT",
+        headers: {
+          "Content-Type": "application/json",
+          "X-CSRF-Token": csrfToken,
+        },
+        body: JSON.stringify({
+          title,
+          description
+        }),
+      });
+      if (!response.ok) toast.error("Failed to update landing page");
+      toast.success("Landing page updated successfully");
+      setTitle("")
+      setDescription("")
+      setUpdatingLandingPage(false);
+    } catch (error) {
+      console.error("Error updating landing page:", error);
+    }
+  }
 
   return (
     <div className="flex flex-col h-full w-full overflow-y-scroll hide-scrollbar bg-white pb-10">
@@ -107,6 +131,32 @@ const AdminPanel = () => {
             title={"Average Spend"}
             value={transactionsData?.averageTransaction || 0}
           />
+        </div>
+        <div className="flex flex-col items-center gap-4 py-10">
+          <h1 className="text-2xl text-[#4e8d99]">Landing Page Information</h1>
+          <form className="flex flex-col gap-4 w-full md:w-3/4 bg-white p-5 rounded-lg drop-shadow-md">
+            <div className="flex gap-2 flex-col">
+              <label className="text-lg text-[#4e8d99]">Title</label>
+              <input
+                type="text"
+                value={title}
+                onChange={(e) => setTitle(e.target.value)}
+                className="p-2 border resize-none border-[#4e8d99] rounded-lg outline-none text-gray-600"
+              />
+            </div>
+            <div className="flex gap-2 flex-col">
+              <label className="text-lg text-[#4e8d99]">Description</label>
+              <textarea
+                value={description}
+                onChange={(e) => setDescription(e.target.value)}
+                rows={3}
+                className="p-2 border resize-none border-[#4e8d99] rounded-lg outline-none text-gray-600"
+              />
+            </div>
+            <button onClick={handleUpdateLandingPage} className="bg-[#4e8d99] px-4 py-2 rounded-lg text-white">
+              {updatingLandingPage ? "Updating..." : "Update"}
+            </button>
+          </form>
         </div>
 
         {/* Transaction History */}
@@ -186,11 +236,13 @@ const AdminPanel = () => {
                   </tr>
                 </thead>
                 <tbody>
-                  {usersData?.users?.map((user,index) => (
+                  {usersData?.users?.map((user, index) => (
                     <tr key={user._id} className="border-b">
-                      <td className="px-4 py-2">{index+1}</td>
+                      <td className="px-4 py-2">{index + 1}</td>
                       <td className="px-4 py-2 truncate">{user._id}</td>
-                      <td className="px-4 py-2 capitalize truncate">{user.username}</td>
+                      <td className="px-4 py-2 capitalize truncate">
+                        {user.username}
+                      </td>
                       <td className="px-4 py-2 truncate">{user.email}</td>
                       <td className="px-4 py-2">${user.walletAmount}</td>
                       <td
