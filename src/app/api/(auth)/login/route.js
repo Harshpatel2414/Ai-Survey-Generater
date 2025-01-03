@@ -29,15 +29,20 @@ const generateCSRFToken = () => {
   return crypto.randomBytes(32).toString('hex'); // Secure CSRF token (64 characters)
 };
 
-const getClientIp = async (req) => {
-  const response = await fetch('https://api.ipify.org/?format=json');
-  const data = await response.json();
-  const clientIp = data.ip;
-  return clientIp;
+const getClientIp = (req) => {
+  const forwarded = req.headers.get('x-forwarded-for');
+  if (forwarded) {
+    return forwarded.split(',')[0].trim();
+  }
+  let ip = req.ip || req.connection?.remoteAddress || req.socket?.remoteAddress;
+  if(ip === "::1") {
+    ip = "127.0.0.1"
+  }
+  return ip ; 
 };
 
 export const POST = async (req) => {
-  const ip = await getClientIp(req);
+  const ip = getClientIp(req);
   console.log("ip >>>", ip)
 
   if (!rateLimiter(ip, maxAttempts, timeWindow)) {
