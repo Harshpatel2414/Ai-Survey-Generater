@@ -15,22 +15,25 @@ import { GrTransaction } from "react-icons/gr";
 import { LuUsers } from "react-icons/lu";
 import { RiCloseFill } from "react-icons/ri";
 import { SiLimesurvey } from "react-icons/si";
+import { PiNotePencilBold } from "react-icons/pi";
+import { RiUserShared2Line } from "react-icons/ri";
+
 import toast from "react-hot-toast";
 import { useAuth } from "@/context/AuthContext";
 
 const Sidebar = () => {
   const [showMenu, setShowMenu] = useState(false);
   const pathname = usePathname();
-  const { currentUser,handleLogout} = useAuth();
+  const { currentUser, handleLogout } = useAuth();
 
   const logOut = async () => {
     toast.success("Logged out successfully");
     await handleLogout();
   };
-  
+
   const menuItems = [
     {
-      icon: <HiOutlineSquares2X2 className='text-xl' />,
+      icon: <HiOutlineSquares2X2 className="text-xl" />,
       label: "Dashboard",
       path: "/admin",
     },
@@ -43,6 +46,16 @@ const Sidebar = () => {
       icon: <LuUsers className="text-lg" />,
       label: "Users",
       path: "/admin/users",
+    },
+    {
+      icon: <PiNotePencilBold className="text-lg" />,
+      label: "Blogs",
+      path: "/admin/blogs",
+    },
+    {
+      icon: <RiUserShared2Line className="text-lg" />,
+      label: "Referrals",
+      path: "/admin/referrals",
     },
     {
       icon: <FiHelpCircle className="text-lg" />,
@@ -110,15 +123,21 @@ const Sidebar = () => {
         </nav>
 
         <div className="pt-2 mt-4 border-t flex items-center gap-2 w-full">
-            <Image
-              src={currentUser ? currentUser?.image : "/user.png"}
-              alt="User"
-              width={40}
-              height={40}
-              className="border-2 h-10 w-10 rounded-full object-center object-cover"
-            />
-            <p className="w-full flex-1 truncate capitalize">{currentUser?.username}</p>
-            <FiLogOut onClick={logOut} size={20} className="hover:bg-gray-100 h-8 w-8 p-2 rounded-md cursor-pointer"/>
+          <Image
+            src={currentUser ? currentUser?.image : "/user.png"}
+            alt="User"
+            width={40}
+            height={40}
+            className="border-2 h-10 w-10 rounded-full object-center object-cover"
+          />
+          <p className="w-full flex-1 truncate capitalize">
+            {currentUser?.username}
+          </p>
+          <FiLogOut
+            onClick={logOut}
+            size={20}
+            className="hover:bg-gray-100 h-8 w-8 p-2 rounded-md cursor-pointer"
+          />
         </div>
       </div>
     </div>
